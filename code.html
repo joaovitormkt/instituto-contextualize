@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR" style="scroll-behavior: smooth;">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Instituto Contextualize - Psicologia Clínica e Formação</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;family=Montserrat:wght@400;600;700&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-background": "#111c2c",
+            "on-primary-container": "#7595b0",
+            "primary": "#001828",
+            "on-secondary-fixed": "#261900",
+            "primary-fixed": "#cbe6ff",
+            "secondary-fixed": "#ffdea1",
+            "inverse-primary": "#aacae7",
+            "on-tertiary-fixed-variant": "#454748",
+            "on-error": "#ffffff",
+            "tertiary-container": "#282b2c",
+            "surface-variant": "#d8e3fa",
+            "on-error-container": "#93000a",
+            "tertiary-fixed": "#e1e3e4",
+            "surface-dim": "#cfdaf1",
+            "surface-container": "#e7eeff",
+            "inverse-surface": "#263142",
+            "outline": "#73787d",
+            "on-secondary-fixed-variant": "#594311",
+            "tertiary": "#141718",
+            "surface-tint": "#42627b",
+            "on-tertiary-container": "#909293",
+            "on-primary-fixed-variant": "#294a62",
+            "inverse-on-surface": "#ebf1ff",
+            "on-tertiary": "#ffffff",
+            "error": "#ba1a1a",
+            "secondary-fixed-dim": "#e2c284",
+            "primary-container": "#062d44",
+            "error-container": "#ffdad6",
+            "surface": "#f9f9ff",
+            "on-surface": "#111c2c",
+            "background": "#f9f9ff",
+            "on-surface-variant": "#42474d",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#fddb9b",
+            "on-primary": "#ffffff",
+            "surface-container-high": "#dee8ff",
+            "on-primary-fixed": "#001e30",
+            "tertiary-fixed-dim": "#c5c7c8",
+            "on-tertiary-fixed": "#191c1d",
+            "surface-container-lowest": "#ffffff",
+            "secondary": "#735b27",
+            "primary-fixed-dim": "#aacae7",
+            "on-secondary-container": "#775f2b",
+            "outline-variant": "#c2c7cd",
+            "surface-container-highest": "#d8e3fa",
+            "surface-bright": "#f9f9ff",
+            "surface-container-low": "#f0f3ff",
+
+            "brand-blue": "#062D44",
+            "brand-gold": "#B5985E"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "unit": "8px",
+            "gutter": "24px",
+            "margin-mobile": "16px",
+            "container-max": "1200px",
+            "margin-desktop": "48px"
+          },
+          "fontFamily": {
+            "headline-md": ["Montserrat"],
+            "headline-lg-mobile": ["Montserrat"],
+            "body-lg": ["Manrope"],
+            "label-md": ["Manrope"],
+            "headline-lg": ["Montserrat"],
+            "body-md": ["Manrope"],
+            "display-lg": ["Montserrat"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+
+    /* ── SMOOTH SCROLL ── */
+    html { scroll-behavior: smooth; }
+
+    /* ── SCROLL REVEAL: initial hidden state ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1), transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.from-left  { transform: translateX(-40px); }
+    .reveal.from-right { transform: translateX(40px); }
+    .reveal.scale-in   { transform: translateY(20px) scale(0.97); }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    /* Stagger delays */
+    .reveal-delay-1 { transition-delay: 0.08s; }
+    .reveal-delay-2 { transition-delay: 0.18s; }
+    .reveal-delay-3 { transition-delay: 0.28s; }
+    .reveal-delay-4 { transition-delay: 0.38s; }
+
+    /* ── PARALLAX LAYERS ── */
+    #parallax-hero-bg  {
+      will-change: transform;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    #parallax-hero-team {
+      will-change: transform;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* Image-card parallax wrapper: overflow is clipped by the rounded parent */
+    #imgcard-parallax-wrap {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    #parallax-imgcard-bg {
+      will-change: transform;
+      position: absolute;
+      top: -12%;
+      left: 0;
+      width: 100%;
+      height: 124%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    /* ── HERO LOAD-IN SEQUENCE ── */
+    @keyframes heroFadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes heroFadeUpCentered {
+      from { opacity: 0; transform: translateX(-50%) translateY(22px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    @keyframes heroFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    /* Start hidden, JS adds class after DOM ready */
+    .hero-load { opacity: 0; }
+    .hero-load.loaded {
+      animation-fill-mode: both;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hero-load-bg.loaded    { animation: heroFadeIn          0.9s 0.05s  both cubic-bezier(0.22,1,0.36,1); }
+    .hero-load-team.loaded  { animation: heroFadeUpCentered  1.0s 0.35s  both cubic-bezier(0.22,1,0.36,1); }
+    .hero-load-text.loaded  { animation: heroFadeUp          0.85s 0.65s both cubic-bezier(0.22,1,0.36,1); }
+    .hero-load-card.loaded  { animation: heroFadeUp          0.85s 0.85s both cubic-bezier(0.22,1,0.36,1); }
+
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .text-shadow {
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ── PRELOADER ── */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #062D44;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+    #preloader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .preloader-ring {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .preloader-ring img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      position: relative;
+      z-index: 2;
+    }
+    @keyframes neonPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(181,152,94,0.0),   0 0 0 0 rgba(181,152,94,0.0); }
+      40%  { box-shadow: 0 0 22px 10px rgba(181,152,94,0.55), 0 0 55px 28px rgba(181,152,94,0.18); }
+      70%  { box-shadow: 0 0 30px 18px rgba(181,152,94,0.3),  0 0 80px 42px rgba(181,152,94,0.08); }
+      100% { box-shadow: 0 0 0 0 rgba(181,152,94,0.0),   0 0 0 0 rgba(181,152,94,0.0); }
+    }
+    .preloader-neon {
+      position: absolute;
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      border: 2px solid rgba(181,152,94,0.55);
+      animation: neonPulse 1.8s ease-in-out infinite;
+      z-index: 1;
+    }
+    .preloader-neon-2 {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 1px solid rgba(181,152,94,0.2);
+      animation: neonPulse 1.8s ease-in-out 0.3s infinite;
+      z-index: 1;
+    }
+
+    @keyframes marquee {
+      0%   { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: max-content;
+      animation: marquee 25s linear infinite;
+    }
+    /* ── MARQUEE — never pause on hover —— */
+    .animate-marquee:hover {
+      animation-play-state: running !important;
+    }
+
+    /* ── ULTRA-WIDE RESPONSIVE SYSTEM (> 1500px) ── */
+    @media (min-width: 1500px) {
+      /* Full width 100% container layout with 50px side padding */
+      section,
+      footer > div > div {
+        max-width: 100% !important;
+        padding-left: 50px !important;
+        padding-right: 50px !important;
+      }
+
+      /* Exception for location section: 100% full width with 0 padding */
+      #location {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
+      /* Header inner wrapper expansion */
+      header > div {
+        max-width: 100% !important;
+        padding-left: 50px !important;
+        padding-right: 50px !important;
+      }
+
+      /* Hero section wrapper */
+      #hero > div {
+        max-width: 100% !important;
+        padding-left: 50px !important;
+        padding-right: 50px !important;
+      }
+
+      #hero-team-container {
+        width: 90% !important;
+        max-width: 1600px !important;
+      }
+
+      #hero-headline-wrapper {
+        left: 50px !important;
+        max-width: 28vw !important;
+      }
+
+      #hero-headline-phrase {
+        font-size: clamp(2rem, 2.4vw, 3.8rem) !important;
+      }
+
+      #hero-headline-highlight {
+        font-size: clamp(4.5rem, 6.2vw, 10.5rem) !important;
+      }
+
+      #hero-right-card {
+        right: 50px !important;
+        width: min(460px, 25vw) !important;
+        padding: 2rem !important;
+      }
+
+      #hero-right-card p {
+        font-size: clamp(0.9375rem, 1.05vw, 1.125rem) !important;
+      }
+
+      /* About Us Section proportional expansion */
+      #about-img {
+        max-width: 780px !important;
+      }
+
+      #about-headline-phrase {
+        font-size: clamp(2.6rem, 3.2vw, 4.8rem) !important;
+      }
+
+      #about-headline-highlight {
+        font-size: clamp(3.2rem, 4.2vw, 6rem) !important;
+      }
+
+      #about-paragraphs p {
+        font-size: clamp(1rem, 1.05vw, 1.15rem) !important;
+      }
+
+      /* Services Section (COMO ATUAMOS) */
+      #services-headline-line1 {
+        font-size: clamp(4.8rem, 6.4vw, 8.5rem) !important;
+      }
+
+      #services-headline-line2 {
+        font-size: clamp(3rem, 4.2vw, 5.8rem) !important;
+      }
+
+      /* Image Card Section */
+      #image-card-headline-line1 {
+        font-size: clamp(2.8rem, 4.2vw, 5.5rem) !important;
+      }
+
+      #image-card-headline-line2 {
+        font-size: clamp(3.5rem, 5.8vw, 7.5rem) !important;
+      }
+
+      #image-card-subtitle {
+        font-size: clamp(1.2rem, 1.5vw, 1.45rem) !important;
+        max-width: 760px !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-brand-gold selection:text-white">
+
+  <!-- Preloader -->
+  <div id="preloader">
+    <div class="preloader-ring">
+      <div class="preloader-neon-2"></div>
+      <div class="preloader-neon"></div>
+      <img src="icone contextualize claro.webp" alt="Carregando Instituto Contextualize" />
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Full-Width Blue Header (Static, disappears on scroll) -->
+    <header style="width: 100%; background: #062D44; position: relative; z-index: 50; box-sizing: border-box;">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;">
+        <a href="#hero" style="display: inline-flex; align-items: center; text-decoration: none;">
+          <img src="logo contextualize branco.webp" alt="Instituto Contextualize" style="height: 38px; width: auto; object-fit: contain;" />
+        </a>
+
+        <!-- Right Side: Social Media Icons + Hamburger Menu Icon -->
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <!-- Instagram Icon -->
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style="
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: flex; align-items: center; justify-content: center;
+            color: #ffffff; text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+          " onmouseover="this.style.background='#B5985E'; this.style.transform='translateY(-1px)'"
+            onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.transform='translateY(0)'">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+            </svg>
+          </a>
+
+          <!-- WhatsApp Icon -->
+          <a href="https://wa.me/5514999999999" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" style="
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: flex; align-items: center; justify-content: center;
+            color: #ffffff; text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+          " onmouseover="this.style.background='#B5985E'; this.style.transform='translateY(-1px)'"
+            onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.transform='translateY(0)'">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+          </a>
+
+          <!-- Hamburger Menu Icon -->
+          <button aria-label="Menu" style="
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12); color: #ffffff; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s, transform 0.2s;
+          " onmouseover="this.style.background='#B5985E'; this.style.transform='scale(1.05)'"
+            onmouseout="this.style.background='rgba(255, 255, 255, 0.12)'; this.style.transform='scale(1)'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" x2="20" y1="7" y2="7"></line>
+              <line x1="4" x2="20" y1="12" y2="12"></line>
+              <line x1="4" x2="20" y1="17" y2="17"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" style="
+    position: relative;
+    min-height: calc(100vh - 62px);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    background: #ffffff;
+    font-family: Manrope, sans-serif;
+    box-sizing: border-box;
+  ">
+      <div style="
+    position: relative;
+    width: 100%;
+    max-width: 1280px;
+    min-height: calc(100vh - 62px);
+    display: flex;
+    flex-direction: column;
+    padding: 0 24px 50px 24px;
+    box-sizing: border-box;
+  ">
+
+      <!-- ── LAYER 0: Brand icon — huge, centered background ── -->
+      <div class="hero-load hero-load-bg" style="
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 0;
+  ">
+        <img id="parallax-hero-bg" src="icone contextualize colorido.webp" alt="" aria-hidden="true" style="
+        width: min(900px, 90vw);
+        height: auto;
+        object-fit: contain;
+        opacity: 0.55;
+      " />
+      </div>
+
+      <!-- ── LAYER 10: Team photo — 90% width & anchored bottom center ── -->
+      <div id="hero-team-container" class="hero-load hero-load-team" style="
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: calc(100vh - 70px);
+    width: 90%;
+    max-width: 1150px;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  ">
+        <img id="parallax-hero-team" src="Hero Contextualize.webp" alt="Equipe de profissionais do Instituto Contextualize" style="
+        width: 100%;
+        height: auto;
+        max-height: calc(100vh - 70px);
+        object-fit: contain;
+        object-position: bottom center;
+      " />
+      </div>
+
+      <!-- ── LAYER 25: Text — bottom left corner, overlaps photo ── -->
+      <div id="hero-headline-wrapper" class="hero-load hero-load-text" style="
+    position: absolute;
+    bottom: 50px;
+    left: 24px;
+    z-index: 25;
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    max-width: 34vw;
+  ">
+        <p id="hero-headline-phrase" style="
+      font-family: Montserrat, sans-serif;
+      font-size: clamp(1.65rem, 2.35vw, 3.3rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: 0.02em;
+      color: #062D44;
+      margin: 0;
+      text-shadow: 0 8px 30px rgba(6, 45, 68, 0.09);
+    ">
+          Nenhum<br />comportamento<br />existe&nbsp;fora&nbsp;do&nbsp;seu
+        </p>
+        <p id="hero-headline-highlight" style="
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(4.2rem, 6.4vw, 9.8rem);
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      color: #B5985E;
+      margin: -0.22em 0 0 0;
+      line-height: 0.95;
+      text-shadow: 0 10px 35px rgba(6, 45, 68, 0.11);
+    ">
+          contexto.
+        </p>
+      </div>
+
+      <!-- ── LAYER 25: Right Text Box (Lightened Dark Glassmorphism Card) ── -->
+      <div id="hero-right-card" class="hero-load hero-load-card" style="
+    position: absolute;
+    bottom: 50px;
+    right: 24px;
+    z-index: 25;
+    width: min(400px, 28vw);
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    background: rgba(6, 45, 68, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 12px 32px rgba(6, 45, 68, 0.2);
+  ">
+        <p style="
+      font-family: Manrope, sans-serif;
+      font-size: clamp(0.78rem, 0.85vw, 0.875rem);
+      font-weight: 400;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.95);
+      margin: 0;
+    ">
+          Comportamento não se explica sozinho. Ele acontece dentro de uma história, um ambiente, uma relação. No Instituto Contextualize, olhamos para esse contexto antes de qualquer rótulo. Na clínica e na formação de psicólogos.
+        </p>
+        <div style="display: flex; align-items: center;">
+          <a href="#services" style="
+            display: inline-flex; align-items: center; gap: 0.65rem;
+            background: #B5985E; color: white;
+            padding: 0.35rem 1.35rem 0.35rem 0.35rem; border-radius: 9999px;
+            font-family: Manrope, sans-serif; font-size: 0.8125rem; font-weight: 600;
+            text-decoration: none; transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+          " onmouseover="this.style.background='#a38750'; this.style.transform='translateY(-1px)'"
+            onmouseout="this.style.background='#B5985E'; this.style.transform='translateY(0)'">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(255, 255, 255, 0.22);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <polyline points="19 12 12 19 5 12"></polyline>
+              </svg>
+            </span>
+            <span>Conheça o Instituto</span>
+          </a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Marquee Banner Section -->
+    <div style="width: 100%; background: #062D44; overflow: hidden; padding: 1.25rem 0; box-sizing: border-box;">
+      <div class="animate-marquee" style="display: flex; align-items: center; gap: 2rem; white-space: nowrap;">
+        <!-- Track 1 -->
+        <div style="display: flex; align-items: center; gap: 2rem; font-family: Montserrat, sans-serif; font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: #ffffff;">
+          <span>Psicologia</span><span style="color: #B5985E;">•</span>
+          <span>Formação</span><span style="color: #B5985E;">•</span>
+          <span>Atendimento Clínico</span><span style="color: #B5985E;">•</span>
+          <span>Terapia</span><span style="color: #B5985E;">•</span>
+          <span>TCC</span><span style="color: #B5985E;">•</span>
+          <span>ACT</span><span style="color: #B5985E;">•</span>
+          <span>Psicologia</span><span style="color: #B5985E;">•</span>
+          <span>Formação</span><span style="color: #B5985E;">•</span>
+          <span>Atendimento Clínico</span><span style="color: #B5985E;">•</span>
+          <span>Terapia</span><span style="color: #B5985E;">•</span>
+          <span>TCC</span><span style="color: #B5985E;">•</span>
+          <span>ACT</span><span style="color: #B5985E;">•</span>
+        </div>
+        <!-- Track 2 (Duplicate for seamless 100% loop) -->
+        <div style="display: flex; align-items: center; gap: 2rem; font-family: Montserrat, sans-serif; font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: #ffffff;">
+          <span>Psicologia</span><span style="color: #B5985E;">•</span>
+          <span>Formação</span><span style="color: #B5985E;">•</span>
+          <span>Atendimento Clínico</span><span style="color: #B5985E;">•</span>
+          <span>Terapia</span><span style="color: #B5985E;">•</span>
+          <span>TCC</span><span style="color: #B5985E;">•</span>
+          <span>ACT</span><span style="color: #B5985E;">•</span>
+          <span>Psicologia</span><span style="color: #B5985E;">•</span>
+          <span>Formação</span><span style="color: #B5985E;">•</span>
+          <span>Atendimento Clínico</span><span style="color: #B5985E;">•</span>
+          <span>Terapia</span><span style="color: #B5985E;">•</span>
+          <span>TCC</span><span style="color: #B5985E;">•</span>
+          <span>ACT</span><span style="color: #B5985E;">•</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services Section -->
+    <section style="width: 100%; max-width: 1280px; margin: 0 auto; box-sizing: border-box; padding: 6rem 24px;" id="services">
+      
+      <!-- ── TOP ROW: Header divided into 2 columns (40% Left / 60% Right) ── -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-12 lg:mb-16">
+        
+        <!-- Left Column (40% / 5 cols out of 12): Kicker + Headline -->
+        <div class="lg:col-span-5 flex flex-col justify-end reveal from-left">
+          <span style="font-family: Montserrat, sans-serif; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.15em; color: #B5985E; text-transform: uppercase; margin-bottom: 0.85rem;">
+            COMO ATUAMOS
+          </span>
+          <div>
+            <p id="services-headline-line1" style="
+              font-family: Georgia, 'Times New Roman', serif;
+              font-size: clamp(3.2rem, 5.2vw, 6.2rem);
+              font-style: italic;
+              font-weight: 400;
+              letter-spacing: 0.01em;
+              color: #B5985E;
+              margin: 0;
+              line-height: 0.95;
+            ">
+              Duas frentes.
+            </p>
+            <p id="services-headline-line2" style="
+              font-family: Montserrat, sans-serif;
+              font-size: clamp(2.2rem, 3.5vw, 4.4rem);
+              font-weight: 800;
+              line-height: 1.05;
+              letter-spacing: -0.02em;
+              color: #062D44;
+              margin: -0.12em 0 0 0;
+            ">
+              Um mesmo olhar.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right Column (60% / 7 cols out of 12): Text -->
+        <div class="lg:col-span-7 flex flex-col justify-end reveal from-right reveal-delay-2">
+          <p style="font-family: Manrope, sans-serif; font-size: clamp(0.95rem, 1.05vw, 1.05rem); line-height: 1.75; color: rgba(6, 45, 68, 0.78); margin: 0;">
+            Seja no consultório ou na formação de outros profissionais, partimos do mesmo princípio: nenhum comportamento se explica isolado do contexto em que acontece. É esse olhar que orienta cada atendimento clínico e cada capacitação que oferecemos; uma base comum que conecta teoria e prática, técnica e sensibilidade, ciência e cuidado. Por isso, ao invés de tratar clínica e formação como frentes separadas, enxergamos as duas como parte do mesmo compromisso: uma psicologia mais precisa, mais ética e mais próxima da realidade de quem atendemos e de quem formamos.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- ── BOTTOM ROW: 2 Cards Row (Atendimentos Clínicos & Formações) ── -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch">
+        
+        <!-- Card 1: Atendimentos Clínicos -->
+        <div class="bg-surface rounded-3xl overflow-hidden border border-outline-variant/30 hover:border-brand-gold/50 transition-all duration-300 group flex flex-col h-full shadow-sm hover:shadow-md reveal scale-in reveal-delay-1">
+          <div class="w-full overflow-hidden bg-surface-variant relative" style="height: clamp(320px, 35vw, 500px);">
+            <img src="Atendimento.jpeg" alt="Atendimentos clínicos - Instituto Contextualize" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          </div>
+          <div class="p-8 flex flex-col flex-grow justify-between">
+            <div>
+              <h3 style="font-family: Montserrat, sans-serif; font-size: 1.4rem; font-weight: 700; color: #062D44; margin: 0 0 0.75rem 0;">
+                Atendimentos clínicos
+              </h3>
+              <p style="font-family: Manrope, sans-serif; font-size: 0.9375rem; line-height: 1.65; color: rgba(6, 45, 68, 0.75); margin: 0 0 1.75rem 0;">
+                Atendimento especializado e humanizado, utilizando abordagens com forte base em evidências científicas como TCC, ACT e ABA para promover o bem-estar emocional e comportamental de crianças, adolescentes e adultos.
+              </p>
+            </div>
+            <div>
+              <a href="#agendar" style="
+                display: inline-flex; align-items: center; gap: 0.65rem;
+                background: #062D44; color: white;
+                padding: 0.35rem 1.35rem 0.35rem 0.35rem; border-radius: 9999px;
+                font-family: Manrope, sans-serif; font-size: 0.875rem; font-weight: 600;
+                text-decoration: none; transition: background 0.2s, transform 0.2s;
+                box-shadow: 0 4px 14px rgba(6,45,68,0.2);
+              " onmouseover="this.style.background='#041e2e'; this.style.transform='translateY(-1px)'"
+                onmouseout="this.style.background='#062D44'; this.style.transform='translateY(0)'">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, 0.2);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </span>
+                <span>Agendar Atendimento</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Formações -->
+        <div class="bg-surface rounded-3xl overflow-hidden border border-outline-variant/30 hover:border-brand-gold/50 transition-all duration-300 group flex flex-col h-full shadow-sm hover:shadow-md reveal scale-in reveal-delay-3">
+          <div class="w-full overflow-hidden bg-surface-variant relative" style="height: clamp(320px, 35vw, 500px);">
+            <img src="Formação.jpeg" alt="Formações - Instituto Contextualize" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          </div>
+          <div class="p-8 flex flex-col flex-grow justify-between">
+            <div>
+              <h3 style="font-family: Montserrat, sans-serif; font-size: 1.4rem; font-weight: 700; color: #062D44; margin: 0 0 0.75rem 0;">
+                Formações
+              </h3>
+              <p style="font-family: Manrope, sans-serif; font-size: 0.9375rem; line-height: 1.65; color: rgba(6, 45, 68, 0.75); margin: 0 0 1.75rem 0;">
+                Cursos e capacitações voltados para profissionais da saúde e educação, focados em aprofundar o conhecimento técnico e prático em Análise do Comportamento Aplicada (ABA) e outras práticas baseadas em evidências.
+              </p>
+            </div>
+            <div>
+              <a href="#formations" style="
+                display: inline-flex; align-items: center; gap: 0.65rem;
+                background: #B5985E; color: white;
+                padding: 0.35rem 1.35rem 0.35rem 0.35rem; border-radius: 9999px;
+                font-family: Manrope, sans-serif; font-size: 0.875rem; font-weight: 600;
+                text-decoration: none; transition: background 0.2s, transform 0.2s;
+                box-shadow: 0 4px 14px rgba(181,152,94,0.25);
+              " onmouseover="this.style.background='#a38750'; this.style.transform='translateY(-1px)'"
+                onmouseout="this.style.background='#B5985E'; this.style.transform='translateY(0)'">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, 0.22);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </span>
+                <span>Conheça as Formações</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Image Card Section -->
+    <section style="width: 100%; max-width: 1280px; margin: 0 auto; box-sizing: border-box; padding: 2rem 24px 4rem 24px;">
+      <div class="relative w-full overflow-hidden" style="border-radius: 3rem; height: 80vh; min-height: 580px; background: #062D44;">
+
+        <!-- Background image with parallax (wrapper clips overflow from rounded parent) -->
+        <div id="imgcard-parallax-wrap">
+          <img
+            id="parallax-imgcard-bg"
+            src="Psychologist_and_patient_talking_202608131705.jpeg"
+            alt="Atendimento psicológico - Instituto Contextualize" />
+        </div>
+
+        <!-- Radial Dark Gradient Overlay for perfect text legibility -->
+        <div
+          style="position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(6,45,68,0.72) 0%, rgba(6,45,68,0.85) 100%); z-index: 5;">
+        </div>
+
+        <!-- ── CENTERED CONTENT: Hero-style White Headline, Subtitle, CTA Buttons ── -->
+        <div style="
+          position: relative;
+          z-index: 20;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 0 2rem;
+          max-width: 900px;
+          margin: 0 auto;
+          box-sizing: border-box;
+        ">
+          <!-- Headline in White (Hero pattern: Montserrat bold + Georgia italic) -->
+          <div style="margin-bottom: 1.5rem; text-align: center;" class="reveal">
+            <p id="image-card-headline-line1" style="
+              font-family: Montserrat, sans-serif;
+              font-size: clamp(2.2rem, 3.8vw, 4.4rem);
+              font-weight: 800;
+              line-height: 1.05;
+              letter-spacing: -0.02em;
+              color: #ffffff;
+              margin: 0;
+            ">
+              Qual contexto
+            </p>
+            <p id="image-card-headline-line2" style="
+              font-family: Georgia, 'Times New Roman', serif;
+              font-size: clamp(2.4rem, 4.2vw, 4.8rem);
+              font-style: italic;
+              font-weight: 400;
+              letter-spacing: 0.01em;
+              color: #ffffff;
+              margin: -0.12em 0 0 0;
+              line-height: 1;
+              white-space: nowrap;
+            ">
+              te trouxe até aqui?
+            </p>
+          </div>
+
+          <!-- Subtitle in White -->
+          <p id="image-card-subtitle" class="reveal reveal-delay-2" style="
+            font-family: Manrope, sans-serif;
+            font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+            font-weight: 400;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.92);
+            margin: 0 auto 2.25rem auto;
+            max-width: 640px;
+          ">
+            Atendimento clínico para quem precisa de cuidado. Formação para quem quer cuidar melhor.
+          </p>
+
+          <!-- Buttons: Centered Side by Side Pill Buttons -->
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: center;" class="reveal reveal-delay-3">
+            <!-- Button 1: Agendar atendimento -->
+            <a href="#agendar" style="
+              display: inline-flex; align-items: center; gap: 0.65rem;
+              background: #062D44; color: #ffffff;
+              padding: 0.4rem 1.4rem 0.4rem 0.4rem; border-radius: 9999px;
+              font-family: Manrope, sans-serif; font-size: 0.875rem; font-weight: 600;
+              text-decoration: none; transition: background 0.2s, transform 0.2s;
+              box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+            " onmouseover="this.style.background='#041e2e'; this.style.transform='translateY(-1px)'"
+              onmouseout="this.style.background='#062D44'; this.style.transform='translateY(0)'">
+              <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, 0.2);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </span>
+              <span>Agendar atendimento</span>
+            </a>
+
+            <!-- Button 2: Ver formações -->
+            <a href="#formations" style="
+              display: inline-flex; align-items: center; gap: 0.65rem;
+              background: #B5985E; color: #ffffff;
+              padding: 0.4rem 1.4rem 0.4rem 0.4rem; border-radius: 9999px;
+              font-family: Manrope, sans-serif; font-size: 0.875rem; font-weight: 600;
+              text-decoration: none; transition: background 0.2s, transform 0.2s;
+              box-shadow: 0 4px 16px rgba(181,152,94,0.3);
+            " onmouseover="this.style.background='#a38750'; this.style.transform='translateY(-1px)'"
+              onmouseout="this.style.background='#B5985E'; this.style.transform='translateY(0)'">
+              <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, 0.22);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </span>
+              <span>Ver formações</span>
+            </a>
+          </div>
+        </div>
+
+
+
+      </div>
+    </section>
+
+        <!-- About Us Section -->
+    <section style="width: 100%; max-width: 1280px; margin: 0 auto; box-sizing: border-box; padding: 6rem 24px;" id="about">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        
+        <!-- Left Column: Icon Image -->
+        <div class="flex items-center justify-center p-2 reveal from-left">
+          <img id="about-img" src="icone contextualize colorido.webp" alt="Ícone Instituto Contextualize" style="
+            max-width: 680px;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 12px 35px rgba(6,45,68,0.1));
+          " />
+        </div>
+
+        <!-- Right Column: Content -->
+        <div class="flex flex-col justify-center reveal from-right reveal-delay-2">
+          <span style="font-family: Montserrat, sans-serif; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.15em; color: #B5985E; text-transform: uppercase; margin-bottom: 0.85rem;">
+            SOBRE NÓS
+          </span>
+
+          <!-- Headline (Inverted: Montserrat bold blue + Georgia italic gold) -->
+          <div style="margin-bottom: 2rem;">
+            <p id="about-headline-phrase" style="
+              font-family: Montserrat, sans-serif;
+              font-size: clamp(2.2rem, 3.4vw, 4rem);
+              font-weight: 800;
+              line-height: 1.05;
+              letter-spacing: -0.02em;
+              color: #062D44;
+              margin: 0;
+            ">
+              Conheça o
+            </p>
+            <p id="about-headline-highlight" style="
+              font-family: Georgia, 'Times New Roman', serif;
+              font-size: clamp(2.8rem, 4.2vw, 5.2rem);
+              font-style: italic;
+              font-weight: 400;
+              letter-spacing: 0.01em;
+              color: #B5985E;
+              margin: -0.12em 0 0 0;
+              line-height: 0.95;
+            ">
+              Instituto Contextualize
+            </p>
+          </div>
+
+          <!-- Text Paragraphs -->
+          <div id="about-paragraphs" style="display: flex; flex-direction: column; gap: 1.25rem; font-family: Manrope, sans-serif; font-size: 0.95rem; line-height: 1.7; color: rgba(6, 45, 68, 0.78);">
+            <p style="margin: 0;">
+              O Instituto Contextualize nasce da ideia de que nada pode ser compreendido fora do seu contexto. Comportamento não se explica isolado: ele acontece dentro de uma história, de um ambiente, de uma rede de relações. Antes de perguntar "o que é isso", preferimos perguntar em que condições isso acontece, e é essa mudança de pergunta que abre espaço para um cuidado mais preciso e menos julgador.
+            </p>
+            <p style="margin: 0;">
+              Esse princípio orienta as duas frentes em que atuamos. Na clínica, oferecemos atendimento psicológico especializado e humanizado para crianças, adolescentes e adultos, com base em abordagens de evidência científica como TCC, ACT e ABA, sempre partindo da compreensão do contexto de vida de quem atendemos. Na formação, levamos essa mesma lógica para outros profissionais, com cursos, capacitações e supervisões voltados a psicólogos e profissionais da saúde e da educação que querem aprofundar seu conhecimento técnico e prático em Análise do Comportamento Aplicada (ABA) e em outras práticas baseadas em evidência.
+            </p>
+            <p style="margin: 0;">
+              Acreditamos que uma psicologia viva, aplicada e com sentido só é possível quando teoria e prática, ciência e sensibilidade, caminham juntas, um equilíbrio presente até na identidade visual do instituto, entre o escuro e o dourado, entre técnica e cuidado.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Team Section -->
+    <section style="width: 100%; max-width: 1280px; margin: 0 auto; box-sizing: border-box; padding: 6rem 24px;" id="team">
+      
+      <!-- Section Header -->
+      <div class="flex flex-col items-center text-center mb-16 reveal">
+        <span style="font-family: Montserrat, sans-serif; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.15em; color: #B5985E; text-transform: uppercase; margin-bottom: 0.85rem;">
+          NOSSA EQUIPE
+        </span>
+        <div style="margin-bottom: 0.5rem;">
+          <p style="
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: clamp(2.8rem, 4.2vw, 5.2rem);
+            font-style: italic;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            color: #B5985E;
+            margin: 0;
+            line-height: 0.95;
+          ">
+            Conheça os profissionais
+          </p>
+          <p style="
+            font-family: Montserrat, sans-serif;
+            font-size: clamp(2.2rem, 3.4vw, 4rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            color: #062D44;
+            margin: -0.12em 0 0 0;
+          ">
+            do Instituto Contextualize
+          </p>
+        </div>
+      </div>
+
+      <!-- Team Grid (4 Columns) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        
+        <!-- Card 1: Renan -->
+        <div class="bg-surface rounded-3xl overflow-hidden border border-outline-variant/30 hover:border-brand-gold/50 transition-all duration-300 group flex flex-col h-full shadow-sm hover:shadow-md reveal scale-in reveal-delay-1">
+          <div class="aspect-[3/4] overflow-hidden relative bg-surface-variant">
+            <img src="Renan.jpeg" alt="Retrato profissional de Renan Merlin Cuani" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" />
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <span style="display: inline-block; align-self: flex-start; background: #B5985E; color: #ffffff; font-family: Montserrat, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.22rem 0.7rem; border-radius: 9999px; margin-bottom: 0.65rem;">
+              CRP 06/130383
+            </span>
+            <h4 style="font-family: Montserrat, sans-serif; font-size: 1.15rem; font-weight: 700; color: #062D44; margin: 0 0 0.65rem 0;">
+              Renan Merlin Cuani
+            </h4>
+            <p style="font-family: Manrope, sans-serif; font-size: 0.875rem; line-height: 1.6; color: rgba(6, 45, 68, 0.75); margin: 0;" class="flex-grow">
+              Psicólogo pós-graduado em Terapia de Aceitação e Compromisso (ACT) e Análise do Comportamento Aplicada (ABA), mestre e doutorando em Psicologia pela UNESP. Atua há 10 anos com psicologia clínica infantil. Atualmente, também é professor universitário e pesquisador na área do autismo.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 2: Pedro -->
+        <div class="bg-surface rounded-3xl overflow-hidden border border-outline-variant/30 hover:border-brand-gold/50 transition-all duration-300 group flex flex-col h-full shadow-sm hover:shadow-md reveal scale-in reveal-delay-2">
+          <div class="aspect-[3/4] overflow-hidden relative bg-surface-variant">
+            <img src="Pedro.jpeg" alt="Retrato profissional de Pedro Henrique Felisberto de Nazareth" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" />
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <span style="display: inline-block; align-self: flex-start; background: #B5985E; color: #ffffff; font-family: Montserrat, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.22rem 0.7rem; border-radius: 9999px; margin-bottom: 0.65rem;">
+              CRP 06/206485
+            </span>
+            <h4 style="font-family: Montserrat, sans-serif; font-size: 1.15rem; font-weight: 700; color: #062D44; margin: 0 0 0.65rem 0;">
+              Pedro Henrique Felisberto de Nazareth
+            </h4>
+            <p style="font-family: Manrope, sans-serif; font-size: 0.875rem; line-height: 1.6; color: rgba(6, 45, 68, 0.75); margin: 0;" class="flex-grow">
+              Psicólogo pós-graduado em Neuropsicologia e Análise do Comportamento Aplicada (ABA). Atua como psicólogo clínico, avaliador neuropsicológico e na implementação da NR-01 em empresas.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 3: Paula -->
+        <div class="bg-surface rounded-3xl overflow-hidden border border-outline-variant/30 hover:border-brand-gold/50 transition-all duration-300 group flex flex-col h-full shadow-sm hover:shadow-md reveal scale-in reveal-delay-3">
+          <div class="aspect-[3/4] overflow-hidden relative bg-surface-variant">
+            <img src="Paula.jpeg" alt="Retrato profissional de Paula Carvalho Ferrari" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" />
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <span style="display: inline-block; align-self: flex-start; background: #B5985E; color: #ffffff; font-family: Montserrat, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.22rem 0.7rem; border-radius: 9999px; margin-bottom: 0.65rem;">
+              CRP 06/204334
+            </span>
+            <h4 style="font-family: Montserrat, sans-serif; font-size: 1.15rem; font-weight: 700; color: #062D44; margin: 0 0 0.65rem 0;">
+              Paula Carvalho Ferrari
+            </h4>
+            <p style="font-family: Manrope, sans-serif; font-size: 0.875rem; line-height: 1.6; color: rgba(6, 45, 68, 0.75); margin: 0;" class="flex-grow">
+              Psicóloga pós-graduada em Análise do Comportamento Aplicada ao TEA e à deficiência intelectual. Atua como psicóloga clínica e na implementação da NR-01 em empresas.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 4: Ana Carolina -->
+        <div class="bg-surface rounded-3xl overflow-hidden border border-outline-variant/30 hover:border-brand-gold/50 transition-all duration-300 group flex flex-col h-full shadow-sm hover:shadow-md reveal scale-in reveal-delay-4">
+          <div class="aspect-[3/4] overflow-hidden relative bg-surface-variant">
+            <img src="Ana Carolina.jpeg" alt="Retrato profissional de Ana Carolina Merlin Ferreira" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" />
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <span style="display: inline-block; align-self: flex-start; background: #B5985E; color: #ffffff; font-family: Montserrat, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.22rem 0.7rem; border-radius: 9999px; margin-bottom: 0.65rem;">
+              CRP 06/158541
+            </span>
+            <h4 style="font-family: Montserrat, sans-serif; font-size: 1.15rem; font-weight: 700; color: #062D44; margin: 0 0 0.65rem 0;">
+              Ana Carolina Merlin Ferreira
+            </h4>
+            <p style="font-family: Manrope, sans-serif; font-size: 0.875rem; line-height: 1.6; color: rgba(6, 45, 68, 0.75); margin: 0;" class="flex-grow">
+              Psicóloga pós-graduada em Neuropsicopedagogia Clínica e em Análise do Comportamento Aplicada ao autismo e à deficiência intelectual, mestranda em Psicologia pela UNESP. Atua com psicologia clínica infantil. Atualmente, também é professora universitária e pesquisadora na área do autismo.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Location & Contact Map Section (100% Full Width across all screen sizes, 0 padding) -->
+    <section id="location" style="width: 100%; position: relative; margin-top: 4rem; overflow: hidden; padding: 0 !important;">
+      
+      <!-- 100% Full Width Map Box -->
+      <div style="width: 100%; height: 580px; position: relative;">
+        
+        <!-- Interactive Google Map pointing to Rua General Telles, 1375, Centro - Botucatu/SP -->
+        <iframe
+          title="Localização Instituto Contextualize"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3674.8878589254397!2d-48.44856012381282!3d-22.889824679267675!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94c6df22055bc595%3A0x6796c82069b2d0fa!2sRua%20General%20Telles%2C%201375%20-%20Centro%2C%20Botucatu%20-%20SP%2C%2018600-035!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
+          style="width: 100%; height: 100%; border: 0; filter: contrast(1.03) saturate(1.05);"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+
+        <!-- Map Bottom Gradient Overlay for Card Contrast -->
+        <div style="position: absolute; bottom: 0; inset-x: 0; height: 220px; background: linear-gradient(to top, rgba(6,45,68,0.85) 0%, rgba(6,45,68,0.3) 60%, transparent 100%); pointer-events: none; z-index: 10;"></div>
+      </div>
+
+      <!-- Overlaid 3 Cards at Bottom of Map -->
+      <div style="
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 1280px;
+        padding: 0 24px;
+        box-sizing: border-box;
+        z-index: 20;
+      ">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          
+          <!-- Card 1: E-mail -->
+          <a href="mailto:contato@institutocontextualize.com" target="_blank" style="
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 1.25rem;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(6,45,68,0.25);
+            transition: transform 0.2s, box-shadow 0.2s;
+          " onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="width: 44px; height: 44px; border-radius: 0.85rem; background: rgba(181, 152, 94, 0.15); display: flex; align-items: center; justify-content: center; color: #B5985E; flex-shrink: 0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+              </svg>
+            </div>
+            <div style="overflow: hidden;">
+              <span style="display: block; font-family: Montserrat, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; color: #B5985E; text-transform: uppercase; margin-bottom: 0.2rem;">
+                E-MAIL DE CONTATO
+              </span>
+              <span style="display: block; font-family: Manrope, sans-serif; font-size: 0.875rem; font-weight: 700; color: #062D44; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                contato@institutocontextualize.com
+              </span>
+            </div>
+          </a>
+
+          <!-- Card 2: WhatsApp -->
+          <a href="https://wa.me/5514999999999" target="_blank" style="
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 1.25rem;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(6,45,68,0.25);
+            transition: transform 0.2s, box-shadow 0.2s;
+          " onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="width: 44px; height: 44px; border-radius: 0.85rem; background: rgba(181, 152, 94, 0.15); display: flex; align-items: center; justify-content: center; color: #B5985E; flex-shrink: 0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+            </div>
+            <div>
+              <span style="display: block; font-family: Montserrat, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; color: #B5985E; text-transform: uppercase; margin-bottom: 0.2rem;">
+                WHATSAPP
+              </span>
+              <span style="display: block; font-family: Manrope, sans-serif; font-size: 0.95rem; font-weight: 700; color: #062D44;">
+                14 99999-9999
+              </span>
+            </div>
+          </a>
+
+          <!-- Card 3: Horário de Atendimento -->
+          <div style="
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 1.25rem;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 10px 30px rgba(6,45,68,0.25);
+          ">
+            <div style="width: 44px; height: 44px; border-radius: 0.85rem; background: rgba(181, 152, 94, 0.15); display: flex; align-items: center; justify-content: center; color: #B5985E; flex-shrink: 0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <div>
+              <span style="display: block; font-family: Montserrat, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; color: #B5985E; text-transform: uppercase; margin-bottom: 0.2rem;">
+                HORÁRIO DE ATENDIMENTO
+              </span>
+              <span style="display: block; font-family: Manrope, sans-serif; font-size: 0.95rem; font-weight: 700; color: #062D44;">
+                Seg a Sex das 09h00 às 18h00
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+  </main>
+  <!-- Footer (Attached directly after map with zero margin gap) -->
+  <footer id="contact" style="width: 100%; background: #062D44; margin-top: 0; padding-top: 3.5rem; padding-bottom: 2.5rem; padding-left: 0; padding-right: 0; overflow: hidden; position: relative;">
+    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%;">
+      
+      <!-- Centered Logo -->
+      <div style="margin-bottom: 2rem;">
+        <img src="logo contextualize branco.webp" alt="Instituto Contextualize" style="height: 52px; width: auto; object-fit: contain; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.3));" />
+      </div>
+
+      <!-- Social Media Icons Row -->
+      <div style="display: flex; align-items: center; justify-content: center; gap: 1.25rem; margin-bottom: 1.75rem;">
+        <!-- Instagram -->
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style="
+          width: 44px; height: 44px; border-radius: 50%;
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          display: flex; align-items: center; justify-content: center;
+          color: #ffffff; text-decoration: none;
+          transition: background 0.2s, transform 0.2s, border-color 0.2s;
+        " onmouseover="this.style.background='#B5985E'; this.style.borderColor='#B5985E'; this.style.transform='translateY(-3px)'"
+          onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.borderColor='rgba(255, 255, 255, 0.15)'; this.style.transform='translateY(0)'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+          </svg>
+        </a>
+
+        <!-- WhatsApp -->
+        <a href="https://wa.me/5514999999999" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" style="
+          width: 44px; height: 44px; border-radius: 50%;
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          display: flex; align-items: center; justify-content: center;
+          color: #ffffff; text-decoration: none;
+          transition: background 0.2s, transform 0.2s, border-color 0.2s;
+        " onmouseover="this.style.background='#B5985E'; this.style.borderColor='#B5985E'; this.style.transform='translateY(-3px)'"
+          onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.borderColor='rgba(255, 255, 255, 0.15)'; this.style.transform='translateY(0)'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+        </a>
+
+        <!-- LinkedIn -->
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style="
+          width: 44px; height: 44px; border-radius: 50%;
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          display: flex; align-items: center; justify-content: center;
+          color: #ffffff; text-decoration: none;
+          transition: background 0.2s, transform 0.2s, border-color 0.2s;
+        " onmouseover="this.style.background='#B5985E'; this.style.borderColor='#B5985E'; this.style.transform='translateY(-3px)'"
+          onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.borderColor='rgba(255, 255, 255, 0.15)'; this.style.transform='translateY(0)'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+            <rect width="4" height="12" x="2" y="9"></rect>
+            <circle cx="4" cy="4" r="2"></circle>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Copyright Text -->
+      <p style="font-family: Manrope, sans-serif; font-size: 0.8125rem; color: rgba(255, 255, 255, 0.5); margin: 0;">
+        &copy; 2026 Instituto Contextualize. Todos os direitos reservados.
+      </p>
+
+    </div>
+  </footer>
+
+<script>
+  /* ─────────────────────────────────────────
+     0. PRELOADER — hide after page load
+  ───────────────────────────────────────── */
+  window.addEventListener('load', function() {
+    var pl = document.getElementById('preloader');
+    if (pl) {
+      setTimeout(function() { pl.classList.add('hidden'); }, 400);
+    }
+  });
+
+  /* ─────────────────────────────────────────
+     1. HERO LOAD-IN SEQUENCE
+  ───────────────────────────────────────── */
+  window.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.hero-load').forEach(function(el) {
+      el.classList.add('loaded');
+    });
+  });
+
+  /* ─────────────────────────────────────────
+     2. SCROLL REVEAL — bidirectional (in + out)
+        Elements fade IN when entering viewport
+        and fade OUT when leaving back upward
+  ───────────────────────────────────────── */
+  (function() {
+    const targets = document.querySelectorAll('.reveal');
+    if (!targets.length) return;
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          /* Entering viewport: animate in */
+          entry.target.classList.add('visible');
+        } else {
+          /* Leaving viewport upward: animate out (only above the fold) */
+          const rect = entry.target.getBoundingClientRect();
+          if (rect.bottom < 0) {
+            /* Element has scrolled fully above viewport — hide it */
+            entry.target.classList.remove('visible');
+          }
+        }
+      });
+    }, { threshold: 0.10, rootMargin: '0px 0px -48px 0px' });
+
+    targets.forEach(el => io.observe(el));
+  })();
+
+  /* ─────────────────────────────────────────
+     3. PARALLAX on scroll
+  ───────────────────────────────────────── */
+  (function() {
+    const heroBg   = document.getElementById('parallax-hero-bg');
+    const heroTeam = document.getElementById('parallax-hero-team');
+    const imgCard  = document.getElementById('parallax-imgcard-bg');
+    const imgWrap  = document.getElementById('imgcard-parallax-wrap');
+    const imgSection = imgWrap ? imgWrap.closest('section') : null;
+
+    function onScroll() {
+      const sy = window.scrollY;
+
+      /* Hero parallax: background icon rises, team photo floats smoothly */
+      if (heroBg)   heroBg.style.transform   = `translateY(${sy * 0.22}px)`;
+      if (heroTeam) heroTeam.style.transform = `translateY(${sy * 0.16}px)`;
+
+      /* Image-card parallax: shift image inside its clipped wrapper */
+      if (imgCard && imgSection) {
+        const rect = imgSection.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+          const shift    = (progress - 0.5) * 70; /* ±35px travel */
+          imgCard.style.transform = `translateY(${shift}px)`;
+        }
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+
+</body>
+
+</html>

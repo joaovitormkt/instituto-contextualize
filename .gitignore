@@ -1,0 +1,9 @@
+node_modules/
+.env
+uploads/
+*.log
+.vercel/
+
+# Manter o code.html original intocado (index.html é o build)
+# code.html
+

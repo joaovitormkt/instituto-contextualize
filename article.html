@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="meta-page-title">Artigo | Instituto Contextualize</title>
+  <meta name="description" id="meta-page-desc" content="Artigo de Psicologia Baseada em Evidências do Instituto Contextualize." />
+
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#062D44',
+              gold: '#B5985E',
+              surface: '#F9F9FF'
+            }
+          },
+          fontFamily: {
+            montserrat: ['Montserrat', 'sans-serif'],
+            manrope: ['Manrope', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Manrope', sans-serif; background-color: #ffffff; color: #111C2C; }
+    h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; }
+    .article-body p { margin-bottom: 1.5rem; line-height: 1.8; font-size: 1.05rem; color: #334155; }
+    .article-body h2 { font-size: 1.6rem; font-weight: 700; color: #062D44; margin-top: 2.5rem; margin-bottom: 1rem; }
+    .article-body h3 { font-size: 1.3rem; font-weight: 600; color: #062D44; margin-top: 2rem; margin-bottom: 0.75rem; }
+    .article-body ul, .article-body ol { margin-bottom: 1.5rem; padding-left: 1.5rem; color: #334155; }
+    .article-body li { margin-bottom: 0.5rem; }
+    .article-body ul { list-style-type: disc; }
+    .article-body ol { list-style-type: decimal; }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased">
+  
+  <!-- Header -->
+  <header style="background: #062D44; position: sticky; top: 0; z-index: 50;">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2">
+        <img src="/logo contextualize branco.webp" alt="Instituto Contextualize" class="h-8 w-auto object-contain" />
+      </a>
+      <div class="flex items-center gap-4">
+        <a href="/#blog" class="text-xs text-white/80 hover:text-white flex items-center gap-1 font-montserrat uppercase font-semibold">
+          <span class="material-symbols-outlined text-sm">arrow_back</span>
+          Voltar ao Blog
+        </a>
+        <a href="https://wa.me/5514999999999" target="_blank" class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-gold text-white hover:bg-opacity-90 font-montserrat">
+          Agendar Consulta
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Container do Artigo -->
+  <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 py-12">
+    <div id="loading" class="text-center py-20 text-slate-400">
+      <span class="material-symbols-outlined animate-spin text-4xl text-brand-gold">progress_activity</span>
+      <p class="mt-3 text-sm">Carregando artigo...</p>
+    </div>
+
+    <article id="article-content" class="hidden">
+      <!-- Categoria & Tags -->
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <span id="art-category" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-gold/15 text-brand-gold font-montserrat"></span>
+        <span id="art-date" class="text-xs text-slate-400"></span>
+      </div>
+
+      <!-- Título Principal -->
+      <h1 id="art-title" class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-brand-blue tracking-tight leading-tight mb-6"></h1>
+
+      <!-- Autor & Metadados -->
+      <div class="flex items-center gap-3 pb-8 border-b border-slate-100 mb-8">
+        <div class="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue">
+          <span class="material-symbols-outlined">person</span>
+        </div>
+        <div>
+          <p id="art-author" class="text-sm font-bold text-brand-blue"></p>
+          <p class="text-xs text-slate-400">Instituto Contextualize • Psicologia Baseada em Evidências</p>
+        </div>
+      </div>
+
+      <!-- Imagem de Capa -->
+      <div class="rounded-3xl overflow-hidden mb-10 shadow-lg border border-slate-100 max-h-[460px]">
+        <img id="art-cover" src="" alt="" class="w-full h-full object-cover" />
+      </div>
+
+      <!-- Excerpt -->
+      <div id="art-excerpt" class="text-lg md:text-xl font-medium text-slate-600 italic border-l-4 border-brand-gold pl-5 py-2 mb-8 bg-slate-50/60 rounded-r-xl"></div>
+
+      <!-- Corpo do Artigo -->
+      <div id="art-body" class="article-body"></div>
+
+      <!-- Chamada para Ação no Rodapé do Artigo -->
+      <div class="mt-16 p-8 rounded-3xl bg-brand-blue text-white shadow-xl relative overflow-hidden">
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 class="text-xl font-bold font-montserrat mb-2">Precisa de suporte psicológico especializado?</h3>
+            <p class="text-sm text-slate-300">Conheça nossa equipe de psicólogos em Botucatu e agende sua sessão presencial ou online.</p>
+          </div>
+          <a href="https://wa.me/5514999999999" target="_blank" class="px-6 py-3.5 rounded-2xl bg-brand-gold text-white font-montserrat font-bold text-xs uppercase tracking-wider hover:bg-opacity-90 whitespace-nowrap shadow-lg">
+            Falar pelo WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Sugestões de Artigos (Leia Também) -->
+      <section class="mt-20 pt-12 border-t border-slate-200" id="related-posts-section">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-brand-gold font-montserrat">CONTINUE LENDO</span>
+            <h3 class="text-2xl font-bold font-montserrat text-brand-blue">Artigos Sugeridos</h3>
+          </div>
+          <a href="/#blog" class="text-xs font-bold text-brand-gold hover:underline flex items-center gap-1 font-montserrat uppercase tracking-wider">
+            Ver todos no blog
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
+        </div>
+        <div id="related-posts-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Carregado via JS -->
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <!-- Footer Simples -->
+  <footer class="bg-brand-blue text-white/60 py-8 border-t border-white/10 text-center text-xs">
+    <p>&copy; 2026 Instituto Contextualize. Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const pathParts = window.location.pathname.split('/');
+      const slug = pathParts[pathParts.length - 1];
+
+      if (!slug) {
+        document.getElementById('loading').innerHTML = '<p class="text-red-500">Artigo não especificado.</p>';
+        return;
+      }
+
+      try {
+        const resp = await fetch(`/api/blog/${slug}`);
+        if (!resp.ok) throw new Error('Artigo não encontrado');
+        const post = await resp.json();
+
+        // SEO
+        document.title = (post.seo_title || post.title) + ' | Instituto Contextualize';
+        if (post.seo_description) {
+          document.getElementById('meta-page-desc').setAttribute('content', post.seo_description);
+        }
+
+        // Preenchimento
+        document.getElementById('art-title').textContent = post.title;
+        document.getElementById('art-category').textContent = post.category || 'Psicologia';
+        document.getElementById('art-author').textContent = post.author_name || 'Equipe Contextualize';
+        document.getElementById('art-date').textContent = post.scheduled_for ? 'Publicado em ' + new Date(post.scheduled_for).toLocaleDateString('pt-BR') : '';
+
+        const coverEl = document.getElementById('art-cover');
+        coverEl.src = post.cover_image || '/Atendimento.jpeg';
+        coverEl.alt = post.title;
+
+        if (post.excerpt) {
+          document.getElementById('art-excerpt').textContent = post.excerpt;
+        } else {
+          document.getElementById('art-excerpt').style.display = 'none';
+        }
+
+        // Converter Markdown completo para HTML estruturado
+        document.getElementById('art-body').innerHTML = formatMarkdown(post.content);
+
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('article-content').classList.remove('hidden');
+
+        // Telemetria: Contabilizar leitura do artigo no Blog e Pageview
+        fetch('/api/analytics/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event_type: 'blog_view',
+            target_id: post.id || slug,
+            metadata: { title: post.title, slug }
+          })
+        }).catch(() => {});
+
+        fetch('/api/analytics/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event_type: 'pageview',
+            target_id: 'article:' + slug,
+            metadata: { title: post.title, path: window.location.pathname }
+          })
+        }).catch(() => {});
+
+        // Carregar Artigos Sugeridos (excluindo o atual)
+        loadRelatedPosts(slug);
+      } catch (err) {
+        document.getElementById('loading').innerHTML = `<p class="text-red-500">${err.message}</p>`;
+      }
+
+      // Tracking de cliques em WhatsApp no artigo
+      document.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (!link) return;
+        const href = link.getAttribute('href') || '';
+        if (href.includes('wa.me') || href.includes('whatsapp.com')) {
+          fetch('/api/analytics/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              event_type: 'whatsapp_click',
+              target_id: 'article_cta',
+              metadata: { href }
+            })
+          }).catch(() => {});
+        }
+      }, { capture: true });
+    });
+
+    async function loadRelatedPosts(currentSlug) {
+      try {
+        const resp = await fetch('/api/blog?limit=6');
+        if (!resp.ok) return;
+        const data = await resp.json();
+        const related = (data.posts || []).filter(p => p.slug !== currentSlug).slice(0, 3);
+        const grid = document.getElementById('related-posts-grid');
+        if (!grid || related.length === 0) {
+          document.getElementById('related-posts-section')?.classList.add('hidden');
+          return;
+        }
+
+        grid.innerHTML = related.map(p => {
+          const dateStr = p.scheduled_for ? new Date(p.scheduled_for).toLocaleDateString('pt-BR') : '';
+          return `
+            <a href="/artigo/${p.slug}" class="bg-white rounded-2xl overflow-hidden border border-slate-200/80 hover:border-brand-gold/60 transition-all duration-300 group flex flex-col h-full shadow-sm hover:shadow-md">
+              <div class="aspect-[16/10] overflow-hidden relative bg-slate-100">
+                <img src="${p.cover_image || '/Atendimento.jpeg'}" alt="${p.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='/Atendimento.jpeg'" />
+                <div class="absolute top-3 left-3 bg-brand-blue/90 backdrop-blur-sm text-white text-[0.65rem] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full font-montserrat">
+                  ${p.category || 'Psicologia'}
+                </div>
+              </div>
+              <div class="p-5 flex flex-col flex-grow">
+                <span class="text-xs text-slate-400 mb-2 font-montserrat">${dateStr}</span>
+                <h4 class="font-montserrat font-bold text-sm text-brand-blue group-hover:text-brand-gold transition-colors line-clamp-2 mb-2 leading-snug">
+                  ${p.title}
+                </h4>
+                <p class="text-xs text-slate-600 line-clamp-2 flex-grow mb-4 leading-relaxed font-manrope">
+                  ${p.excerpt || ''}
+                </p>
+                <span class="text-xs font-bold text-brand-gold flex items-center gap-1 font-montserrat mt-auto">
+                  LER ARTIGO
+                  <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
+                </span>
+              </div>
+            </a>
+          `;
+        }).join('');
+      } catch (e) {
+        console.warn('Erro ao carregar artigos sugeridos:', e);
+      }
+    }
+
+    function formatMarkdown(text) {
+      if (!text) return '';
+      // Normalização
+      let t = text.replace(/\r\n/g, '\n');
+      
+      // Separadores horizontais
+      t = t.replace(/^---$/gm, '<hr class="my-8 border-slate-200" />');
+      
+      // Cabeçalhos
+      t = t.replace(/^### (.*$)/gm, '<h3 class="text-xl font-bold text-brand-blue mt-8 mb-3 font-montserrat">$1</h3>');
+      t = t.replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold text-brand-blue mt-10 mb-4 font-montserrat pb-2 border-b border-slate-100">$1</h2>');
+      t = t.replace(/^# (.*$)/gm, '<h1 class="text-3xl font-extrabold text-brand-blue mt-12 mb-6 font-montserrat">$1</h1>');
+      
+      // Ênfases
+      t = t.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-brand-blue">$1</strong>');
+      t = t.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+      
+      // Listas com marcadores
+      t = t.replace(/^\* (.*$)/gm, '<li class="ml-4 list-disc text-slate-700 leading-relaxed my-1.5 font-manrope">$1</li>');
+      t = t.replace(/(<li.*<\/li>\n?)+/g, '<ul class="my-5 pl-2 space-y-1">$&</ul>');
+      
+      // Parágrafos
+      const paragraphs = t.split(/\n{2,}/);
+      return paragraphs.map(p => {
+        p = p.trim();
+        if (!p) return '';
+        if (p.startsWith('<h') || p.startsWith('<ul') || p.startsWith('<hr') || p.startsWith('<li')) {
+          return p;
+        }
+        return `<p class="text-base text-slate-700 leading-relaxed mb-5 font-manrope">${p.replace(/\n/g, '<br>')}</p>`;
+      }).join('\n');
+    }
+  </script>
+</body>
+</html>
