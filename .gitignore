@@ -7,3 +7,6 @@ uploads/
 # Manter o code.html original intocado (index.html é o build)
 # code.html
 
+
+.vercel
+.env*
