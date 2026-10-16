@@ -3,15 +3,15 @@ const { runNewsScanAndGenerate, getOpenAIApiKey } = require('./ai-service');
 const db = require('./db');
 
 function initScheduler() {
-  // Cron: Toda segunda-feira às 06h00 da manhã no fuso horário de Brasília (America/Sao_Paulo)
-  // Formato: minuto(0) hora(6) dia-do-mês(*) mês(*) dia-da-semana(1 = Segunda)
-  const cronExpression = '0 6 * * 1';
+  // Cron: Toda segunda-feira às 09h00 da manhã no fuso horário de Brasília (America/Sao_Paulo)
+  // Formato: minuto(0) hora(9) dia-do-mês(*) mês(*) dia-da-semana(1 = Segunda)
+  const cronExpression = '0 9 * * 1';
   const timezone = process.env.TIMEZONE || 'America/Sao_Paulo';
 
-  console.log(`[Agendador] Inicializado: toda segunda-feira às 06:00 BRT (${cronExpression}) - Fuso: ${timezone}`);
+  console.log(`[Agendador] Inicializado: toda segunda-feira às 09:00 BRT (${cronExpression}) - Fuso: ${timezone}`);
 
   cron.schedule(cronExpression, async () => {
-    console.log('[Agendador] [06:00 BRT Segunda-Feira] Iniciando rotina programada de varredura de notícias de Psicologia com a IA...');
+    console.log('[Agendador] [09:00 BRT Segunda-Feira] Iniciando rotina programada de varredura de notícias de Psicologia com a IA...');
     try {
       // Verificar se a automação está ativa nas configurações
       const configRes = await db.query("SELECT value FROM system_settings WHERE key = 'cron_enabled'");

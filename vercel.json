@@ -22,5 +22,15 @@
       "source": "/",
       "destination": "/api/index.js"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/monday-ai",
+      "schedule": "0 12 * * 1"
+    },
+    {
+      "path": "/api/cron/publish-check",
+      "schedule": "0 15 * * 1-5"
+    }
   ]
 }

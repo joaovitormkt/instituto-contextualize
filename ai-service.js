@@ -61,16 +61,28 @@ async function fetchNewsFeeds() {
 
 function getNextWeekDays() {
   const dates = [];
-  const today = new Date();
-  const dayOfWeek = today.getDay();
-  const daysUntilNextMonday = dayOfWeek === 1 ? 7 : (8 - dayOfWeek) % 7 || 7;
-  const monday = new Date(today);
-  monday.setDate(today.getDate() + daysUntilNextMonday);
+  // Data e hora de referência no fuso horário de Brasília
+  const nowBRT = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+  const dayOfWeek = nowBRT.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
 
+  let monday = new Date(nowBRT);
+  if (dayOfWeek === 1) {
+    // Se hoje é segunda-feira, a semana a ser agendada começa hoje
+    monday = new Date(nowBRT);
+  } else {
+    // Se rodar em outro dia, agenda para a próxima segunda-feira
+    const daysUntilNextMonday = ((1 - dayOfWeek + 7) % 7) || 7;
+    monday.setDate(nowBRT.getDate() + daysUntilNextMonday);
+  }
+
+  // Gera Segunda a Sexta com horário pré-fixado para as 12h00 BRT
   for (let i = 0; i < 5; i++) {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
-    dates.push(d.toISOString().split('T')[0]);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    dates.push(`${yyyy}-${mm}-${dd}T12:00:00-03:00`);
   }
   return dates;
 }
@@ -256,7 +268,8 @@ Responda ESTRITAMENTE em formato JSON com a seguinte estrutura:
 
   for (let i = 0; i < posts.length; i++) {
     const post = posts[i];
-    const scheduledDate = post.scheduled_date || weekDays[i] || new Date().toISOString().split('T')[0];
+    // Garantir data e horário de Brasília: 12h00
+    const scheduledDate = weekDays[i] || (post.scheduled_date ? `${post.scheduled_date}T12:00:00-03:00` : new Date().toISOString());
 
     // Gerar slug único
     let baseSlug = (post.slug || post.title)

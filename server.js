@@ -278,11 +278,11 @@ app.post('/api/admin/blog', authenticateToken, async (req, res) => {
     let normalizedScheduledFor = scheduled_for;
     if (normalizedScheduledFor) {
       if (/^\d{4}-\d{2}-\d{2}$/.test(String(normalizedScheduledFor).trim())) {
-        normalizedScheduledFor = `${String(normalizedScheduledFor).trim()}T09:00:00`;
+        normalizedScheduledFor = `${String(normalizedScheduledFor).trim()}T12:00:00-03:00`;
       }
     } else {
       const today = new Date().toISOString().split('T')[0];
-      normalizedScheduledFor = `${today}T09:00:00`;
+      normalizedScheduledFor = `${today}T12:00:00-03:00`;
     }
 
     const result = await db.query(
@@ -321,7 +321,7 @@ app.put('/api/admin/blog/:id', authenticateToken, async (req, res) => {
 
     let normalizedScheduledFor = scheduled_for;
     if (normalizedScheduledFor && /^\d{4}-\d{2}-\d{2}$/.test(String(normalizedScheduledFor).trim())) {
-      normalizedScheduledFor = `${String(normalizedScheduledFor).trim()}T09:00:00`;
+      normalizedScheduledFor = `${String(normalizedScheduledFor).trim()}T12:00:00-03:00`;
     }
 
     const result = await db.query(
@@ -366,7 +366,7 @@ app.post('/api/admin/blog/bulk-action', authenticateToken, async (req, res) => {
     if (action === 'approve_schedule') {
       if (target_date) {
         // Se o usuário especificou data e hora manual
-        const finalDate = target_date.includes('T') ? target_date : `${target_date}T09:00:00`;
+        const finalDate = target_date.includes('T') ? target_date : `${target_date}T12:00:00-03:00`;
         await db.query(
           `UPDATE blog_posts 
            SET status = 'scheduled',
@@ -376,17 +376,18 @@ app.post('/api/admin/blog/bulk-action', authenticateToken, async (req, res) => {
           [finalDate, ids]
         );
       } else {
-        // Regra solicitada: Quando aprovado vai automaticamente para programação para ser publicado sozinho naquele dia às 09h00
+        // Regra do Instituto: Ao aprovar o post em rascunho, ele passa para 'scheduled'
+        // mantendo a data pré-definida às 12h00 (ou meio-dia de hoje caso estivesse nulo)
         await db.query(
           `UPDATE blog_posts 
            SET status = 'scheduled',
-               scheduled_for = date_trunc('day', COALESCE(scheduled_for, NOW())) + time '09:00:00',
+               scheduled_for = date_trunc('day', COALESCE(scheduled_for, NOW())) + time '12:00:00',
                updated_at = NOW()
            WHERE id = ANY($1)`,
           [ids]
         );
       }
-      return res.json({ success: true, message: `${ids.length} post(s) aprovado(s) e programado(s) para as 09h00!` });
+      return res.json({ success: true, message: `${ids.length} post(s) aprovado(s) e programado(s) para o meio-dia (12h00)!` });
     }
 
     if (action === 'publish_now') {
@@ -731,6 +732,51 @@ app.get('/api/admin/ai/logs', authenticateToken, async (req, res) => {
   }
 });
 
+// Endpoint seguro para acionamento do CRON semanal (Vercel Cron ou serviço externo)
+// Executado toda segunda-feira às 09h00 BRT
+app.all('/api/cron/monday-ai', async (req, res) => {
+  try {
+    // Validação de segurança opcional via CRON_SECRET no cabeçalho Authorization
+    const authHeader = req.headers['authorization'];
+    if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      return res.status(401).json({ error: 'Acesso não autorizado ao Cron.' });
+    }
+
+    // Verificar se automação está ativa no banco Neon
+    const configRes = await db.query("SELECT value FROM system_settings WHERE key = 'cron_enabled'");
+    const isEnabled = configRes.rows.length === 0 || configRes.rows[0].value === 'true';
+
+    if (!isEnabled) {
+      return res.json({ message: 'Automação desativada nas configurações do sistema. Ignorado.' });
+    }
+
+    console.log('[Cron Webhook] [09:00 BRT Segunda-Feira] Executando varredura semanal automática da IA...');
+    const result = await runNewsScanAndGenerate(false);
+
+    // Também executa limpeza e publicação imediata
+    await autoPublishScheduledPosts();
+
+    res.json({
+      success: true,
+      message: 'Rotina de segunda-feira às 09:00 executada com sucesso!',
+      result
+    });
+  } catch (err) {
+    console.error('[Cron Webhook] Erro:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Endpoint leve para checagem frequente de publicação e expiração de rascunhos não aprovados
+app.all('/api/cron/publish-check', async (req, res) => {
+  try {
+    await autoPublishScheduledPosts();
+    res.json({ success: true, message: 'Checagem de publicação e expiração concluída.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Upload de imagem
 app.post('/api/admin/upload', authenticateToken, upload.single('image'), (req, res) => {
   if (!req.file) {
@@ -777,6 +823,7 @@ app.use((req, res, next) => {
 // ==========================================
 async function autoPublishScheduledPosts() {
   try {
+    // 1. Publicar posts devidamente aprovados e programados ('scheduled') cujo horário (12h00) já foi atingido
     const result = await db.query(
       `UPDATE blog_posts
        SET status = 'published'
@@ -786,8 +833,26 @@ async function autoPublishScheduledPosts() {
        RETURNING id, title`
     );
     if (result.rowCount > 0) {
-      console.log(`[Auto-Publish] ${result.rowCount} post(s) publicado(s) automaticamente:`);
+      console.log(`[Auto-Publish] ${result.rowCount} post(s) aprovado(s) publicado(s) automaticamente:`);
       result.rows.forEach(p => console.log(`  - [id=${p.id}] ${p.title}`));
+    }
+
+    // 2. REGRA DO INSTITUTO: Se o post estava em 'draft' (rascunho) e a data pré-agendada passou
+    // sem que o admin o aprovasse, o post NÃO deve ser publicado.
+    // Ele perde a data pré-definida (scheduled_for = NULL) e continua como rascunho
+    // para que o admin possa agendar uma nova data posteriormente.
+    const expiredDrafts = await db.query(
+      `UPDATE blog_posts
+       SET scheduled_for = NULL,
+           updated_at = NOW()
+       WHERE status = 'draft'
+         AND scheduled_for IS NOT NULL
+         AND scheduled_for <= NOW()
+       RETURNING id, title`
+    );
+    if (expiredDrafts.rowCount > 0) {
+      console.log(`[Auto-Publish] ${expiredDrafts.rowCount} rascunho(s) não aprovado(s) a tempo tiveram a data expirada removida:`);
+      expiredDrafts.rows.forEach(p => console.log(`  - [id=${p.id}] ${p.title}`));
     }
   } catch (err) {
     console.error('[Auto-Publish] Erro:', err.message);
