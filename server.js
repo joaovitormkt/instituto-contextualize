@@ -758,6 +758,18 @@ app.get('/artigo/:slug', (req, res) => {
   res.sendFile(path.join(__dirname, 'article.html'));
 });
 
+// Servir explicitamente assets estáticos da raiz (imagens com espaços, webp, jpeg, png, etc.)
+app.get('*', (req, res, next) => {
+  // Apenas arquivos com extensões comuns
+  if (/\.(webp|jpeg|jpg|png|svg|ico|css|js|woff2?|ttf)$/i.test(req.path)) {
+    const filePath = path.join(__dirname, decodeURIComponent(req.path));
+    if (fs.existsSync(filePath)) {
+      return res.sendFile(filePath);
+    }
+  }
+  next();
+});
+
 // ==========================================
 // JOB: AUTO-PUBLICAR POSTS AGENDADOS
 // Roda a cada 5 minutos e publica posts cujo

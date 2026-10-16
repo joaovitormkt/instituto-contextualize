@@ -1471,11 +1471,18 @@
   /* ─────────────────────────────────────────
      0. PRELOADER — hide after page load
   ───────────────────────────────────────── */
-  window.addEventListener('load', function() {
+  function hidePreloader() {
     var pl = document.getElementById('preloader');
-    if (pl) {
-      setTimeout(function() { pl.classList.add('hidden'); }, 400);
+    if (pl && !pl.classList.contains('hidden')) {
+      pl.classList.add('hidden');
     }
+  }
+  window.addEventListener('load', function() {
+    setTimeout(hidePreloader, 350);
+  });
+  // Failsafe: se alguma imagem externa ou fonte demorar, libera o site em no máximo 1.5s
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(hidePreloader, 1200);
   });
 
   /* ─────────────────────────────────────────
