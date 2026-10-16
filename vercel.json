@@ -2,7 +2,7 @@
   "version": 2,
   "functions": {
     "api/index.js": {
-      "includeFiles": "*.html"
+      "includeFiles": "**/*.html"
     }
   },
   "rewrites": [
@@ -15,7 +15,11 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/artigo/(.*)",
+      "source": "/artigo/:slug",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/",
       "destination": "/api/index.js"
     }
   ]
