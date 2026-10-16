@@ -759,7 +759,7 @@ app.get('/artigo/:slug', (req, res) => {
 });
 
 // Servir explicitamente assets estáticos da raiz (imagens com espaços, webp, jpeg, png, etc.)
-app.get('*', (req, res, next) => {
+app.use((req, res, next) => {
   // Apenas arquivos com extensões comuns
   if (/\.(webp|jpeg|jpg|png|svg|ico|css|js|woff2?|ttf)$/i.test(req.path)) {
     const filePath = path.join(__dirname, decodeURIComponent(req.path));
