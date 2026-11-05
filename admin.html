@@ -1126,7 +1126,7 @@
           card.innerHTML = `
             <div>
               <div class="aspect-[3/4] rounded-2xl overflow-hidden mb-4 bg-slate-100 relative">
-                <img src="/${p.photo_url || 'Hero Contextualize.webp'}" alt="${p.name}" class="w-full h-full object-cover object-top" onerror="this.src='/Hero Contextualize.webp'" />
+                <img src="${fotoSrc(p.photo_url)}" alt="${p.name}" class="w-full h-full object-cover object-top" onerror="this.src='/Hero Contextualize.webp'" />
                 <span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full ${p.is_active ? 'bg-emerald-500 text-white' : 'bg-slate-400 text-white'}">
                   ${p.is_active ? 'Ativo' : 'Oculto'}
                 </span>
@@ -1822,6 +1822,12 @@
       } catch (e) {
         console.error('Erro ao carregar configurações:', e);
       }
+    }
+
+    // Caminho da foto: aceita URL completa, caminho absoluto (/blog/imagem/1) ou nome de arquivo (Renan.jpeg)
+    function fotoSrc(url) {
+      const u = (url || 'Hero Contextualize.webp').trim();
+      return /^(https?:|data:|\/)/.test(u) ? u : '/' + u;
     }
 
     // ==========================================

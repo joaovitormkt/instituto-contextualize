@@ -13,29 +13,18 @@ const { initScheduler } = require('./scheduler');
 const { runNewsScanAndGenerate, scanNewsOnly, generatePostsFromSelectedNews } = require('./ai-service');
 const { publicados, porSlug, garantirEsquema } = require('./lib/blog-posts');
 const { paginaLista, paginaPost, sitemap, feed } = require('./lib/blog-html');
-const { lerImagem, gerarComIA, buscarNaInternet, importarDaInternet, garantirTabela } = require('./lib/blog-imagens');
+const { salvarImagem, lerImagem, gerarComIA, buscarNaInternet, importarDaInternet, garantirTabela } = require('./lib/blog-imagens');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuração de upload com Multer (com suporte ao filesystem da Vercel /tmp)
-const uploadDir = process.env.VERCEL ? path.join('/tmp', 'uploads') : path.join(__dirname, 'uploads');
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'file-' + uniqueSuffix + ext);
-  }
-});
+// Upload em memória: a Vercel não guarda arquivos, então a imagem vai para o Neon
+// (tabela blog_images) e é servida em /blog/imagem/:id.
+const uploadDir = path.join(__dirname, 'uploads');
 const upload = multer({
-  storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 4 * 1024 * 1024 }, // 4MB (limite de corpo da Vercel é 4,5MB)
+  fileFilter: (req, file, cb) => cb(null, /^image\//.test(file.mimetype))
 });
 
 // Middlewares
@@ -44,8 +33,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Servir arquivos estáticos do diretório raiz e de uploads
-app.use('/uploads', express.static(uploadDir));
-if (fs.existsSync(path.join(__dirname, 'uploads'))) {
+if (fs.existsSync(uploadDir)) {
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 }
 app.use(express.static(__dirname));
@@ -864,12 +852,23 @@ app.put('/api/admin/conta', authenticateToken, async (req, res) => {
   }
 });
 
-app.post('/api/admin/upload', authenticateToken, upload.single('image'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'Nenhum arquivo enviado.' });
-  }
-  const fileUrl = `/uploads/${req.file.filename}`;
-  res.json({ url: fileUrl, filename: req.file.filename });
+app.post('/api/admin/upload', authenticateToken, (req, res) => {
+  upload.single('image')(req, res, async (err) => {
+    if (err) {
+      const msg = err.code === 'LIMIT_FILE_SIZE' ? 'A imagem passa de 4MB. Reduza o tamanho e tente de novo.' : err.message;
+      return res.status(400).json({ error: msg });
+    }
+    if (!req.file) {
+      return res.status(400).json({ error: 'Nenhuma imagem enviada.' });
+    }
+    try {
+      const { url } = await salvarImagem(req.file.buffer, req.file.mimetype, { origem: 'upload' });
+      res.json({ url });
+    } catch (e) {
+      console.error('Erro ao salvar upload:', e);
+      res.status(500).json({ error: 'Erro ao salvar a imagem.' });
+    }
+  });
 });
 
 // ==========================================

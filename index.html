@@ -357,6 +357,22 @@
         max-width: 760px !important;
       }
     }
+  
+    /* Equipe: fotos sem fundo sobre branco gelo; no hover, fundo azul do tema com dot branco atrás */
+    .team-photo { background: #F4F6F8; transition: background-color .45s ease; }
+    .group:hover .team-photo { background: #062D44; }
+    .team-dot {
+      position: absolute; left: 50%; top: 52%; width: 78%; aspect-ratio: 1; border-radius: 9999px;
+      background: #ffffff; transform: translate(-50%, -50%) scale(0); opacity: 0;
+      transition: transform .55s cubic-bezier(0.22,1,0.36,1), opacity .35s ease; z-index: 0;
+    }
+    .group:hover .team-dot { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    .team-img {
+      position: relative; z-index: 1; width: 100%; height: 100%;
+      object-fit: cover; object-position: center bottom;
+      transition: transform .5s cubic-bezier(0.22,1,0.36,1);
+    }
+    .group:hover .team-img { transform: scale(1.04); }
   </style>
 </head>
 
@@ -972,8 +988,9 @@
         
         <!-- Card 1: Renan -->
         <div class="bg-surface rounded-3xl overflow-hidden border border-outline-variant/30 hover:border-brand-gold/50 transition-all duration-300 group flex flex-col h-full shadow-sm hover:shadow-md reveal scale-in reveal-delay-1">
-          <div class="aspect-[3/4] overflow-hidden relative bg-surface-variant">
-            <img src="Renan.jpeg" alt="Retrato profissional de Renan Merlin Cuani" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" />
+          <div class="team-photo aspect-[3/4] overflow-hidden relative">
+            <span class="team-dot" aria-hidden="true"></span>
+            <img src="Renan.jpeg" alt="Retrato profissional de Renan Merlin Cuani" class="team-img" />
           </div>
           <div class="p-6 flex flex-col flex-grow">
             <span style="display: inline-block; align-self: flex-start; background: #B5985E; color: #ffffff; font-family: Montserrat, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.22rem 0.7rem; border-radius: 9999px; margin-bottom: 0.65rem;">
@@ -990,8 +1007,9 @@
 
         <!-- Card 2: Pedro -->
         <div class="bg-surface rounded-3xl overflow-hidden border border-outline-variant/30 hover:border-brand-gold/50 transition-all duration-300 group flex flex-col h-full shadow-sm hover:shadow-md reveal scale-in reveal-delay-2">
-          <div class="aspect-[3/4] overflow-hidden relative bg-surface-variant">
-            <img src="Pedro.jpeg" alt="Retrato profissional de Pedro Henrique Felisberto de Nazareth" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" />
+          <div class="team-photo aspect-[3/4] overflow-hidden relative">
+            <span class="team-dot" aria-hidden="true"></span>
+            <img src="Pedro.jpeg" alt="Retrato profissional de Pedro Henrique Felisberto de Nazareth" class="team-img" />
           </div>
           <div class="p-6 flex flex-col flex-grow">
             <span style="display: inline-block; align-self: flex-start; background: #B5985E; color: #ffffff; font-family: Montserrat, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.22rem 0.7rem; border-radius: 9999px; margin-bottom: 0.65rem;">
@@ -1008,8 +1026,9 @@
 
         <!-- Card 3: Paula -->
         <div class="bg-surface rounded-3xl overflow-hidden border border-outline-variant/30 hover:border-brand-gold/50 transition-all duration-300 group flex flex-col h-full shadow-sm hover:shadow-md reveal scale-in reveal-delay-3">
-          <div class="aspect-[3/4] overflow-hidden relative bg-surface-variant">
-            <img src="Paula.jpeg" alt="Retrato profissional de Paula Carvalho Ferrari" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" />
+          <div class="team-photo aspect-[3/4] overflow-hidden relative">
+            <span class="team-dot" aria-hidden="true"></span>
+            <img src="Paula.jpeg" alt="Retrato profissional de Paula Carvalho Ferrari" class="team-img" />
           </div>
           <div class="p-6 flex flex-col flex-grow">
             <span style="display: inline-block; align-self: flex-start; background: #B5985E; color: #ffffff; font-family: Montserrat, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.22rem 0.7rem; border-radius: 9999px; margin-bottom: 0.65rem;">
@@ -1026,8 +1045,9 @@
 
         <!-- Card 4: Ana Carolina -->
         <div class="bg-surface rounded-3xl overflow-hidden border border-outline-variant/30 hover:border-brand-gold/50 transition-all duration-300 group flex flex-col h-full shadow-sm hover:shadow-md reveal scale-in reveal-delay-4">
-          <div class="aspect-[3/4] overflow-hidden relative bg-surface-variant">
-            <img src="Ana Carolina.jpeg" alt="Retrato profissional de Ana Carolina Merlin Ferreira" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" />
+          <div class="team-photo aspect-[3/4] overflow-hidden relative">
+            <span class="team-dot" aria-hidden="true"></span>
+            <img src="Ana Carolina.jpeg" alt="Retrato profissional de Ana Carolina Merlin Ferreira" class="team-img" />
           </div>
           <div class="p-6 flex flex-col flex-grow">
             <span style="display: inline-block; align-self: flex-start; background: #B5985E; color: #ffffff; font-family: Montserrat, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.22rem 0.7rem; border-radius: 9999px; margin-bottom: 0.65rem;">
@@ -1615,8 +1635,9 @@
             const card = document.createElement('div');
             card.className = 'bg-surface rounded-3xl overflow-hidden border border-outline-variant/30 hover:border-brand-gold/50 transition-all duration-300 group flex flex-col h-full shadow-sm hover:shadow-md reveal scale-in visible';
             card.innerHTML = `
-              <div class="aspect-[3/4] overflow-hidden relative bg-surface-variant">
-                <img src="${p.photo_url || 'Hero Contextualize.webp'}" alt="Retrato profissional de ${p.name}" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" onerror="this.src='Hero Contextualize.webp'" />
+              <div class="team-photo aspect-[3/4] overflow-hidden relative">
+                <span class="team-dot" aria-hidden="true"></span>
+                <img src="${p.photo_url || 'Hero Contextualize.webp'}" alt="Retrato profissional de ${p.name}" class="team-img" onerror="this.src='Hero Contextualize.webp'" />
               </div>
               <div class="p-6 flex flex-col flex-grow">
                 <span style="display: inline-block; align-self: flex-start; background: #B5985E; color: #ffffff; font-family: Montserrat, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.22rem 0.7rem; border-radius: 9999px; margin-bottom: 0.65rem;">
