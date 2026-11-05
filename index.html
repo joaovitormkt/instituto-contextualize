@@ -363,7 +363,7 @@
     .group:hover .team-photo { background: #062D44; }
     .team-dot {
       position: absolute; left: 50%; top: 52%; width: 78%; aspect-ratio: 1; border-radius: 9999px;
-      background: #ffffff; transform: translate(-50%, -50%) scale(0); opacity: 0;
+      background: #ffffff; filter: blur(32px); transform: translate(-50%, -50%) scale(0); opacity: 0;
       transition: transform .55s cubic-bezier(0.22,1,0.36,1), opacity .35s ease; z-index: 0;
     }
     .group:hover .team-dot { transform: translate(-50%, -50%) scale(1); opacity: 1; }
