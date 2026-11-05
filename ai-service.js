@@ -7,6 +7,7 @@
 const db = require('./db');
 const { semanaDePublicacao, semanaISO } = require('./lib/blog-util');
 const { garantirEsquema, slugLivre } = require('./lib/blog-posts');
+const { garantirTabela, capaAutomatica } = require('./lib/blog-imagens');
 
 const API = 'https://api.openai.com/v1/responses';
 const raciocina = (m) => /^(gpt-5|o\d)/.test(m);
@@ -84,7 +85,7 @@ const SCHEMA_PAUTAS = {
       items: {
         type: 'object',
         additionalProperties: false,
-        required: ['title', 'summary', 'angulo', 'por_que_agora', 'publico', 'fatos', 'fontes', 'tags', 'category_suggestion', 'relevance_score', 'score_justification'],
+        required: ['title', 'summary', 'angulo', 'por_que_agora', 'publico', 'fatos', 'fontes', 'tags', 'category_suggestion', 'relevance_score', 'score_justification', 'busca_imagem_en'],
         properties: {
           title: { type: 'string' },
           summary: { type: 'string' },
@@ -100,6 +101,7 @@ const SCHEMA_PAUTAS = {
           category_suggestion: { type: 'string', enum: CATEGORIAS },
           relevance_score: { type: 'number' },
           score_justification: { type: 'string' },
+          busca_imagem_en: { type: 'string' },
         },
       },
     },
@@ -158,7 +160,7 @@ Dê uma nota de 0 a 10 (relevance_score) considerando atualidade, solidez das fo
 
 Evite repetir estes temas já publicados: ${recentes.length ? recentes.map((t) => `"${t}"`).join('; ') : 'nenhum'}.
 
-Escreva em português do Brasil. summary: 2 a 3 frases. Tags: 2 a 4 palavras curtas.`,
+Escreva em português do Brasil. summary: 2 a 3 frases. Tags: 2 a 4 palavras curtas. busca_imagem_en: 2 a 4 palavras em inglês para buscar uma foto acolhedora que represente o tema (ex.: "calm woman reading", "family walking park").`,
       },
     ],
   });
@@ -255,7 +257,14 @@ async function generatePostsFromSelectedNews(selectedNews, { origem = 'painel' }
   );
   const livres = datas.filter((d) => !ocupadas.has(d.toISOString()));
 
-  const escritos = await Promise.allSettled(pautas.map((p) => escreverPost(ia, p)));
+  await garantirTabela();
+  // Texto e capa de cada artigo em paralelo (a capa não pode atrasar o texto).
+  const [escritos, capas] = await Promise.all([
+    Promise.allSettled(pautas.map((p) => escreverPost(ia, p))),
+    Promise.allSettled(pautas.map((p) => capaAutomatica({
+      titulo: p.title, categoria: p.category_suggestion, resumo: p.angulo || p.summary, buscaEn: p.busca_imagem_en,
+    }))),
+  ]);
   const criados = [];
   for (let i = 0; i < pautas.length; i++) {
     const pauta = pautas[i];
@@ -268,12 +277,13 @@ async function generatePostsFromSelectedNews(selectedNews, { origem = 'painel' }
       .map((f) => ({ titulo: String(f.titulo || '').slice(0, 200), url: String(f.url).slice(0, 500) }));
     const tags = (post.tags?.length ? post.tags : pauta.tags || []).map((t) => String(t).slice(0, 40)).slice(0, 4);
     const data = livres[criados.length] || null; // sem dia livre na semana: fica sem data até alguém agendar
-    const capa = CAPAS[(Number(lote.slice(-2)) * 5 + criados.length) % CAPAS.length];
+    const capaNova = capas[i].status === 'fulfilled' ? capas[i].value : null;
+    const capa = capaNova?.url || CAPAS[(Number(lote.slice(-2)) * 5 + criados.length) % CAPAS.length];
     const r = await db.query(
       `INSERT INTO blog_posts
         (title, slug, excerpt, content, cover_image, cover_alt, author_name, category, tags, relevance_score, source_url,
-         scheduled_for, status, seo_title, seo_description, seo_keywords, sources, origin, batch)
-       VALUES ($1, $2, $3, $4, $5, $6, 'Instituto Contextualize', $7, $8, $9, $10, $11, 'draft', $12, $13, $14, $15::jsonb, 'ia', $16)
+         scheduled_for, status, seo_title, seo_description, seo_keywords, sources, origin, batch, cover_credit, cover_credit_url)
+       VALUES ($1, $2, $3, $4, $5, $6, 'Instituto Contextualize', $7, $8, $9, $10, $11, 'draft', $12, $13, $14, $15::jsonb, 'ia', $16, $17, $18)
        RETURNING id, title, scheduled_for`,
       [
         titulo,
@@ -281,7 +291,7 @@ async function generatePostsFromSelectedNews(selectedNews, { origem = 'painel' }
         String(post.resumo || pauta.summary || '').slice(0, 320),
         String(post.corpo_markdown || ''),
         capa,
-        'Imagem ilustrativa do Instituto Contextualize',
+        capaNova ? `Imagem ilustrativa: ${titulo}` : 'Imagem ilustrativa do Instituto Contextualize',
         CATEGORIAS.includes(pauta.category_suggestion) ? pauta.category_suggestion : 'Saúde Mental',
         tags,
         Number(pauta.relevance_score) || null,
@@ -292,6 +302,8 @@ async function generatePostsFromSelectedNews(selectedNews, { origem = 'painel' }
         tags.join(', '),
         JSON.stringify(fontes),
         lote,
+        capaNova?.credito || '',
+        capaNova?.credito_url || '',
       ],
     );
     criados.push(r.rows[0]);

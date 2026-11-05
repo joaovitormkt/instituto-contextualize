@@ -13,6 +13,7 @@ const { initScheduler } = require('./scheduler');
 const { runNewsScanAndGenerate, scanNewsOnly, generatePostsFromSelectedNews } = require('./ai-service');
 const { publicados, porSlug, garantirEsquema } = require('./lib/blog-posts');
 const { paginaLista, paginaPost, sitemap, feed } = require('./lib/blog-html');
+const { lerImagem, gerarComIA, buscarNaInternet, importarDaInternet, garantirTabela } = require('./lib/blog-imagens');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -253,6 +254,7 @@ app.delete('/api/admin/professionals/:id', authenticateToken, async (req, res) =
 app.get('/api/admin/blog', authenticateToken, async (req, res) => {
   try {
     await garantirEsquema();
+    await garantirTabela();
     const result = await db.query('SELECT * FROM blog_posts ORDER BY scheduled_for DESC, id DESC');
     res.json(result.rows);
   } catch (err) {
@@ -262,7 +264,7 @@ app.get('/api/admin/blog', authenticateToken, async (req, res) => {
 
 app.post('/api/admin/blog', authenticateToken, async (req, res) => {
   try {
-    const { title, excerpt, content, cover_image, author_name, category, tags, scheduled_for, status, seo_title, seo_description, seo_keywords, sources } = req.body;
+    const { title, excerpt, content, cover_image, author_name, category, tags, scheduled_for, status, seo_title, seo_description, seo_keywords, sources, cover_credit, cover_credit_url } = req.body;
     if (!title || !content) {
       return res.status(400).json({ error: 'Título e conteúdo são obrigatórios.' });
     }
@@ -290,8 +292,8 @@ app.post('/api/admin/blog', authenticateToken, async (req, res) => {
 
     const result = await db.query(
       `INSERT INTO blog_posts
-        (title, slug, excerpt, content, cover_image, author_name, category, tags, scheduled_for, status, seo_title, seo_description, seo_keywords, sources)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, COALESCE($14::jsonb, '[]'::jsonb))
+        (title, slug, excerpt, content, cover_image, author_name, category, tags, scheduled_for, status, seo_title, seo_description, seo_keywords, sources, cover_credit, cover_credit_url)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, COALESCE($14::jsonb, '[]'::jsonb), $15, $16)
        RETURNING *`,
       [
         title.trim(),
@@ -307,7 +309,9 @@ app.post('/api/admin/blog', authenticateToken, async (req, res) => {
         seo_title || title,
         seo_description || excerpt,
         seo_keywords || '',
-        limparFontes(sources)
+        limparFontes(sources),
+        String(cover_credit || '').slice(0, 300),
+        String(cover_credit_url || '').slice(0, 500)
       ]
     );
 
@@ -321,7 +325,7 @@ app.post('/api/admin/blog', authenticateToken, async (req, res) => {
 app.put('/api/admin/blog/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, excerpt, content, cover_image, author_name, category, tags, scheduled_for, status, seo_title, seo_description, seo_keywords, sources } = req.body;
+    const { title, excerpt, content, cover_image, author_name, category, tags, scheduled_for, status, seo_title, seo_description, seo_keywords, sources, cover_credit, cover_credit_url } = req.body;
 
     let normalizedScheduledFor = scheduled_for;
     if (normalizedScheduledFor && /^\d{4}-\d{2}-\d{2}$/.test(String(normalizedScheduledFor).trim())) {
@@ -343,10 +347,14 @@ app.put('/api/admin/blog/:id', authenticateToken, async (req, res) => {
            seo_description = COALESCE($11, seo_description),
            seo_keywords = COALESCE($12, seo_keywords),
            sources = COALESCE($14::jsonb, sources),
+           cover_credit = COALESCE($15, cover_credit),
+           cover_credit_url = COALESCE($16, cover_credit_url),
            updated_at = NOW()
        WHERE id = $13
        RETURNING *`,
-      [title, excerpt, content, cover_image, author_name, category, tags, normalizedScheduledFor, STATUS_POST.includes(status) ? status : null, seo_title, seo_description, seo_keywords, id, limparFontes(sources)]
+      [title, excerpt, content, cover_image, author_name, category, tags, normalizedScheduledFor, STATUS_POST.includes(status) ? status : null, seo_title, seo_description, seo_keywords, id, limparFontes(sources),
+        cover_credit === undefined ? null : String(cover_credit).slice(0, 300),
+        cover_credit_url === undefined ? null : String(cover_credit_url).slice(0, 500)]
     );
 
     if (result.rows.length === 0) {
@@ -789,6 +797,73 @@ app.all('/api/cron/publish-check', async (req, res) => {
 });
 
 // Upload de imagem
+// ==========================================
+// CAPAS DO BLOG: gerar com IA, buscar e importar da internet
+// ==========================================
+app.post('/api/admin/imagens/gerar', authenticateToken, async (req, res) => {
+  try {
+    const { titulo, categoria, resumo } = req.body || {};
+    if (!String(titulo || '').trim()) return res.status(400).json({ error: 'Escreva o título do artigo antes de gerar a imagem.' });
+    res.json(await gerarComIA({ titulo: String(titulo).slice(0, 200), categoria: String(categoria || '').slice(0, 60), resumo: String(resumo || '').slice(0, 320) }));
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.get('/api/admin/imagens/buscar', authenticateToken, async (req, res) => {
+  try {
+    res.json(await buscarNaInternet(String(req.query.q || ''), 18));
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.post('/api/admin/imagens/importar', authenticateToken, async (req, res) => {
+  try {
+    res.json(await importarDaInternet(req.body || {}));
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// ==========================================
+// ACESSO DO ADMINISTRADOR: trocar e-mail e senha
+// ==========================================
+app.put('/api/admin/conta', authenticateToken, async (req, res) => {
+  try {
+    const { senha_atual, email, nova_senha } = req.body || {};
+    const r = await db.query('SELECT * FROM users WHERE id = $1', [req.user.id]);
+    const user = r.rows[0];
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado. Saia e entre de novo.' });
+    if (!senha_atual || !(await bcrypt.compare(String(senha_atual), user.password_hash))) {
+      return res.status(400).json({ error: 'A senha atual está incorreta.' });
+    }
+    const novoEmail = String(email || user.email).trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(novoEmail)) return res.status(400).json({ error: 'E-mail inválido.' });
+    if (novoEmail !== user.email) {
+      const ja = await db.query('SELECT 1 FROM users WHERE email = $1 AND id <> $2', [novoEmail, user.id]);
+      if (ja.rows.length) return res.status(400).json({ error: 'Já existe um usuário com este e-mail.' });
+    }
+    let hash = user.password_hash;
+    if (nova_senha) {
+      const s = String(nova_senha);
+      if (s.length < 10 || !/[a-zA-Z]/.test(s) || !/\d/.test(s)) {
+        return res.status(400).json({ error: 'A nova senha precisa ter pelo menos 10 caracteres, com letras e números.' });
+      }
+      hash = await bcrypt.hash(s, 10);
+    }
+    const u = (await db.query(
+      'UPDATE users SET email = $1, password_hash = $2 WHERE id = $3 RETURNING id, name, email, role',
+      [novoEmail, hash, user.id]
+    )).rows[0];
+    const token = jwt.sign({ id: u.id, name: u.name, email: u.email, role: u.role }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({ success: true, token, user: u });
+  } catch (err) {
+    console.error('Erro ao atualizar acesso:', err);
+    res.status(500).json({ error: 'Erro ao atualizar o acesso.' });
+  }
+});
+
 app.post('/api/admin/upload', authenticateToken, upload.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'Nenhum arquivo enviado.' });
@@ -847,6 +922,17 @@ app.get('/blog/feed.xml', async (req, res) => {
     const posts = await publicados(30);
     res.set('Cache-Control', BLOG_CACHE);
     res.type('application/rss+xml; charset=utf-8').send(feed(siteDe(req), posts));
+  } catch (err) {
+    res.status(500).end();
+  }
+});
+
+app.get('/blog/imagem/:id', async (req, res) => {
+  try {
+    const img = await lerImagem(Number(req.params.id) || 0);
+    if (!img) return res.status(404).end();
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    res.type(img.mime).send(img.data);
   } catch (err) {
     res.status(500).end();
   }

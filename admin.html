@@ -640,6 +640,44 @@
           </div>
 
         </form>
+
+        <!-- Card: Acesso do administrador -->
+        <form id="form-conta" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6" onsubmit="salvarConta(event)">
+          <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
+            <div class="p-2.5 rounded-xl bg-blue-50 text-brand-blue">
+              <span class="material-symbols-outlined">admin_panel_settings</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-brand-blue font-montserrat text-lg">Acesso do administrador</h3>
+              <p class="text-xs text-slate-500">E-mail e senha usados para entrar neste painel</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 font-montserrat" for="conta-email">E-mail de acesso</label>
+              <input type="email" id="conta-email" required autocomplete="username" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 font-montserrat" for="conta-senha-atual">Senha atual</label>
+              <input type="password" id="conta-senha-atual" required autocomplete="current-password" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none" placeholder="Obrigatória para salvar" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 font-montserrat" for="conta-nova-senha">Nova senha</label>
+              <input type="password" id="conta-nova-senha" autocomplete="new-password" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none" placeholder="Deixe em branco para manter" />
+              <p class="text-[11px] text-slate-400 mt-1">Mínimo de 10 caracteres, com letras e números.</p>
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 font-montserrat" for="conta-confirma">Confirme a nova senha</label>
+              <input type="password" id="conta-confirma" autocomplete="new-password" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none" />
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button type="submit" class="btn-blue px-8 py-4 rounded-2xl font-montserrat text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-lg">
+              <span class="material-symbols-outlined text-base">lock_reset</span>
+              <span>Salvar acesso</span>
+            </button>
+          </div>
+        </form>
       </section>
 
     </main>
@@ -855,6 +893,7 @@
       loadProfessionals();
       loadBlogPosts();
       loadAllSettings();
+      carregarConta();
     }
 
     function logout() {
@@ -1520,6 +1559,19 @@
                   <input type="file" id="ed-capa-arquivo" accept="image/*" class="hidden" onchange="uploadImage(this, 'ed-capa').then(() => escolherCapa(document.getElementById('ed-capa').value))" />
                 </label>
               </div>
+              <p id="ed-capa-credito" class="text-[11px] text-slate-400">${escHtml(p.cover_credit || '')}</p>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" onclick="gerarCapaIA(this)" class="btn-gold py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider font-montserrat flex items-center justify-center gap-1"><span class="material-symbols-outlined text-sm">auto_awesome</span> Gerar com IA</button>
+                <button type="button" onclick="document.getElementById('ed-busca-box').classList.toggle('hidden')" class="py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-wider font-montserrat bg-slate-100 text-slate-700 hover:bg-slate-200 flex items-center justify-center gap-1"><span class="material-symbols-outlined text-sm">image_search</span> Buscar na web</button>
+              </div>
+              <div id="ed-busca-box" class="hidden space-y-2">
+                <div class="flex items-center gap-2">
+                  <input id="ed-busca" class="${campoCls} text-xs" value="${escHtml(BUSCA_POR_CATEGORIA[p.category] || 'calm wellbeing')}" placeholder="Palavras em inglês" onkeydown="if (event.key === 'Enter') { event.preventDefault(); buscarImagens(); }" />
+                  <button type="button" onclick="buscarImagens(this)" class="btn-blue px-3 py-2.5 rounded-xl text-xs"><span class="material-symbols-outlined text-sm">search</span></button>
+                </div>
+                <p class="text-[11px] text-slate-400">Fotos livres para uso comercial (Openverse). Em inglês a busca encontra mais.</p>
+                <div id="ed-busca-resultados" class="grid grid-cols-3 gap-2 max-h-72 overflow-y-auto"></div>
+              </div>
             </section>
 
             <section class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4">
@@ -1589,10 +1641,82 @@
       }
     }
 
-    function escolherCapa(c) {
+    const BUSCA_POR_CATEGORIA = {
+      'Saúde Mental': 'calm person nature', 'Psicologia': 'therapy conversation', 'Bem-estar': 'wellbeing morning light',
+      'Qualidade de Vida': 'healthy lifestyle walk', 'Relacionamentos': 'couple talking', 'Infância e Família': 'family playing',
+      'Saúde Mental no Trabalho': 'office team break', 'Neurociência': 'brain science'
+    };
+    let resultadosBusca = [];
+
+    function escolherCapa(c, credito = '', creditoUrl = '') {
       document.getElementById('ed-capa').value = c;
       document.getElementById('ed-capa-previa').src = imgSrc(c);
       postAtual.cover_image = c;
+      postAtual.cover_credit = credito;
+      postAtual.cover_credit_url = creditoUrl;
+      document.getElementById('ed-capa-credito').textContent = credito;
+    }
+
+    async function gerarCapaIA(botao) {
+      const titulo = document.getElementById('ed-titulo').value.trim();
+      if (!titulo) return alert('Escreva o título do artigo antes de gerar a imagem.');
+      try {
+        const img = await ocupado(botao, () => apiJson(`${API_BASE}/admin/imagens/gerar`, {
+          method: 'POST',
+          body: { titulo, categoria: document.getElementById('ed-categoria').value, resumo: document.getElementById('ed-resumo').value }
+        }), 'Gerando...');
+        escolherCapa(img.url, img.credito || '', img.credito_url || '');
+      } catch (e) { alert(e.message); }
+    }
+
+    async function buscarImagens() {
+      const q = document.getElementById('ed-busca').value.trim();
+      const alvo = document.getElementById('ed-busca-resultados');
+      if (!q) return;
+      alvo.innerHTML = '<p class="col-span-3 text-xs text-slate-400 py-4 text-center">Buscando...</p>';
+      try {
+        resultadosBusca = await apiJson(`${API_BASE}/admin/imagens/buscar?q=${encodeURIComponent(q)}`);
+        alvo.innerHTML = resultadosBusca.length
+          ? resultadosBusca.map((r, i) => `<button type="button" onclick="usarImagemBusca(${i}, this)" title="${escHtml(r.credito)}" class="rounded-xl overflow-hidden border-2 border-transparent hover:border-brand-gold"><img src="${escHtml(r.miniatura)}" alt="${escHtml(r.titulo)}" loading="lazy" class="w-full aspect-[4/3] object-cover bg-slate-100" /></button>`).join('')
+          : '<p class="col-span-3 text-xs text-slate-400 py-4 text-center">Nada encontrado. Tente outras palavras em inglês.</p>';
+      } catch (e) {
+        alvo.innerHTML = `<p class="col-span-3 text-xs text-red-600 py-4 text-center">${escHtml(e.message)}</p>`;
+      }
+    }
+
+    async function usarImagemBusca(i, botao) {
+      const r = resultadosBusca[i];
+      if (!r) return;
+      botao.classList.add('opacity-50', 'pointer-events-none');
+      try {
+        const img = await apiJson(`${API_BASE}/admin/imagens/importar`, { method: 'POST', body: r });
+        escolherCapa(img.url, img.credito || r.credito, img.credito_url || r.credito_url);
+      } catch (e) { alert(e.message); }
+      finally { botao.classList.remove('opacity-50', 'pointer-events-none'); }
+    }
+
+    async function carregarConta() {
+      try {
+        const r = await authFetch(`${API_BASE}/auth/me`);
+        const d = await r.json();
+        if (d.user && d.user.email) document.getElementById('conta-email').value = d.user.email;
+      } catch (e) { /* o campo fica vazio */ }
+    }
+
+    async function salvarConta(e) {
+      e.preventDefault();
+      const nova = document.getElementById('conta-nova-senha').value;
+      if (nova && nova !== document.getElementById('conta-confirma').value) return alert('A confirmação não bate com a nova senha.');
+      try {
+        const r = await ocupado(e.submitter, () => apiJson(`${API_BASE}/admin/conta`, {
+          method: 'PUT',
+          body: { email: document.getElementById('conta-email').value, senha_atual: document.getElementById('conta-senha-atual').value, nova_senha: nova || undefined }
+        }), 'Salvando...');
+        currentToken = r.token;
+        localStorage.setItem('contextualize_token', currentToken);
+        ['conta-senha-atual', 'conta-nova-senha', 'conta-confirma'].forEach(id => { document.getElementById(id).value = ''; });
+        alert('Acesso atualizado. Use o novo e-mail e a nova senha no próximo login.');
+      } catch (err) { alert(err.message); }
     }
 
     function dadosDoEditor() {
@@ -1602,6 +1726,8 @@
         excerpt: v('ed-resumo').trim(),
         content: v('ed-corpo'),
         cover_image: v('ed-capa').trim() || 'Atendimento.jpeg',
+        cover_credit: postAtual.cover_credit || '',
+        cover_credit_url: postAtual.cover_credit_url || '',
         author_name: v('ed-autor'),
         category: v('ed-categoria').trim(),
         tags: v('ed-tags').split(',').map(t => t.trim()).filter(Boolean),
