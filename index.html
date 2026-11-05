@@ -362,8 +362,9 @@
     .team-photo { background: #F4F6F8; transition: background-color .45s ease; }
     .group:hover .team-photo { background: #062D44; }
     .team-dot {
-      position: absolute; left: 50%; top: 52%; width: 78%; aspect-ratio: 1; border-radius: 9999px;
-      background: #ffffff; filter: blur(32px); transform: translate(-50%, -50%) scale(0); opacity: 0;
+      position: absolute; left: 50%; top: 50%; width: 110%; aspect-ratio: 1; border-radius: 9999px;
+      background: radial-gradient(circle, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.18) 35%, rgba(255,255,255,0.05) 55%, rgba(255,255,255,0) 70%);
+      filter: blur(24px); transform: translate(-50%, -50%) scale(0.6); opacity: 0;
       transition: transform .55s cubic-bezier(0.22,1,0.36,1), opacity .35s ease; z-index: 0;
     }
     .group:hover .team-dot { transform: translate(-50%, -50%) scale(1); opacity: 1; }
