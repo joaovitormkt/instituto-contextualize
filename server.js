@@ -303,7 +303,7 @@ app.post('/api/admin/blog', authenticateToken, async (req, res) => {
         category || 'Psicologia',
         tags || ['Psicologia'],
         normalizedScheduledFor,
-        status || 'draft',
+        STATUS_POST.includes(status) ? status : 'draft',
         seo_title || title,
         seo_description || excerpt,
         seo_keywords || '',
@@ -346,7 +346,7 @@ app.put('/api/admin/blog/:id', authenticateToken, async (req, res) => {
            updated_at = NOW()
        WHERE id = $13
        RETURNING *`,
-      [title, excerpt, content, cover_image, author_name, category, tags, normalizedScheduledFor, status, seo_title, seo_description, seo_keywords, id, limparFontes(sources)]
+      [title, excerpt, content, cover_image, author_name, category, tags, normalizedScheduledFor, STATUS_POST.includes(status) ? status : null, seo_title, seo_description, seo_keywords, id, limparFontes(sources)]
     );
 
     if (result.rows.length === 0) {
@@ -359,6 +359,8 @@ app.put('/api/admin/blog/:id', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Erro ao atualizar artigo.' });
   }
 });
+
+const STATUS_POST = ['draft', 'scheduled', 'published', 'archived'];
 
 // Fontes vindas do painel: só links http(s), com título curto.
 function limparFontes(v) {
@@ -720,13 +722,9 @@ app.post('/api/admin/ai/generate-selected', authenticateToken, async (req, res) 
 // Execução manual direta da IA (varre e gera as top 5)
 app.post('/api/admin/ai/run-now', authenticateToken, async (req, res) => {
   try {
-    console.log('[Admin] Disparo manual da varredura completa...');
-    const result = await runNewsScanAndGenerate(true);
-    res.json({
-      success: true,
-      message: `Varredura concluída com sucesso! ${result.news_scanned} notícias avaliadas e ${result.posts_created} novos artigos criados em rascunho.`,
-      result
-    });
+    console.log('[Admin] Gerando as pautas da semana pelo painel...');
+    const result = await runNewsScanAndGenerate(true, { forcar: Boolean(req.body && req.body.forcar) });
+    res.json({ success: true, message: result.message, result });
   } catch (err) {
     console.error('Erro na geração manual da IA:', err.message);
     res.status(400).json({ error: err.message });

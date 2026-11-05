@@ -132,7 +132,8 @@ const CUIDADOS = `Cuidados obrigatórios (saúde mental é tema sensível):
 /**
  * 1. PESQUISA AS PAUTAS DA SEMANA (para o gestor ver e escolher)
  */
-async function scanNewsOnly() {
+async function scanNewsOnly(quantidade = 10) {
+  const n = Math.max(3, Math.min(10, Number(quantidade) || 10));
   const ia = await credenciais();
   const recentes = (await db.query('SELECT title FROM blog_posts ORDER BY created_at DESC LIMIT 40')).rows.map((p) => p.title);
   const hoje = new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'long' });
@@ -149,7 +150,7 @@ async function scanNewsOnly() {
         role: 'user',
         content: `Hoje é ${hoje}. Pesquise na web o que está acontecendo AGORA (últimos 30 dias, de preferência) e é relevante para esse público: estudos e pesquisas recentes em psicologia e saúde mental; dados e levantamentos no Brasil (Ministério da Saúde, Fiocruz, OMS, OPAS, IBGE, CFP); campanhas e datas do calendário de saúde (ex.: Janeiro Branco, Setembro Amarelo, Dia Mundial da Saúde Mental, Novembro Azul e saúde mental masculina); saúde mental no trabalho, burnout e NR-01; infância, adolescência, telas e redes sociais; TEA e neurodiversidade; sono, estresse, ansiedade, luto, relacionamentos; hábitos de bem-estar e qualidade de vida com base científica; e assuntos da época do ano.
 
-Proponha exatamente 10 pautas diferentes entre si, úteis para o dia a dia de quem lê, com um ângulo prático e humano. Misture: pelo menos 2 ligadas a estudo ou dado recente, 2 guias práticos de autocuidado ou bem-estar, 1 sobre infância ou família, 1 sobre saúde mental no trabalho e 1 ligada a campanha ou data do período (se houver).
+Proponha exatamente ${n} pautas diferentes entre si, úteis para o dia a dia de quem lê, com um ângulo prático e humano. Misture: pelo menos 1 ligada a estudo ou dado recente, 1 guia prático de autocuidado ou bem-estar, 1 sobre infância, família ou trabalho e, se houver, 1 ligada a campanha ou data do período.
 
 Para cada pauta traga fatos verificáveis encontrados na busca e as URLs das fontes (só fontes reais que você consultou, de preferência instituições, universidades, revistas científicas e veículos de imprensa confiáveis). Não invente números, estudos ou citações.
 
@@ -163,7 +164,7 @@ Escreva em português do Brasil. summary: 2 a 3 frases. Tags: 2 a 4 palavras cur
   });
 
   const pautas = (r.pautas || [])
-    .slice(0, 10)
+    .slice(0, n)
     .map((p) => ({
       ...p,
       relevance_score: Math.max(0, Math.min(10, Number(p.relevance_score) || 0)),
@@ -195,7 +196,7 @@ async function escreverPost(ia, pauta) {
     ...ia,
     nome: 'post',
     schema: SCHEMA_POST,
-    timeoutMs: 120000,
+    timeoutMs: 110000,
     input: [
       {
         role: 'system',
@@ -310,23 +311,23 @@ async function generatePostsFromSelectedNews(selectedNews, { origem = 'painel' }
 }
 
 /**
- * 3. ROTINA COMPLETA (cron das segundas ou botão "Gerar direto"):
- *    pesquisa e escreve as 5 pautas mais bem avaliadas.
- *    No cron, não repete se a semana já foi gerada.
+ * 3. ROTINA COMPLETA (cron das segundas ou botão "Gerar 5 pautas agora"):
+ *    pesquisa 5 pautas e escreve os 5 artigos.
+ *    Não repete a semana já gerada, a não ser que peçam (forcar).
  */
-async function runNewsScanAndGenerate(manualTrigger = false) {
+async function runNewsScanAndGenerate(manualTrigger = false, { forcar = false } = {}) {
   await garantirEsquema();
   const lote = semanaISO(semanaDePublicacao()[0]);
-  if (!manualTrigger) {
+  if (!forcar) {
     const ja = await db.query(`SELECT COUNT(*)::int AS n FROM blog_posts WHERE batch = $1 AND origin = 'ia'`, [lote]);
     if (ja.rows[0].n > 0) {
-      return { status: 'skipped', lote, news_scanned: 0, posts_created: 0, message: `Os artigos da semana ${lote} já foram gerados.` };
+      return { status: 'skipped', pulado: true, lote, news_scanned: 0, posts_created: 0, message: `Os artigos desta semana (${lote}) já foram gerados.` };
     }
   }
 
   let scan;
   try {
-    scan = await scanNewsOnly();
+    scan = await scanNewsOnly(5);
   } catch (e) {
     await logExecution('error', 0, 0, { lote }, e.message);
     throw e;
@@ -339,6 +340,7 @@ async function runNewsScanAndGenerate(manualTrigger = false) {
     lote,
     news_scanned: scan.news.length,
     posts_created: gen.posts_created,
+    message: gen.message,
     posts: gen.posts,
     all_news: scan.news,
   };

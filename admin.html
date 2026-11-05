@@ -57,6 +57,17 @@
     .btn-blue:hover { background-color: #001828; transform: translateY(-1px); }
     .loader { border: 3px solid #f3f3f3; border-top: 3px solid #B5985E; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .previa-artigo { color: #334155; font-size: 0.97rem; line-height: 1.75; }
+    .previa-artigo > * + * { margin-top: 1em; }
+    .previa-artigo h2 { font-size: 1.35rem; font-weight: 700; color: #062D44; margin-top: 1.6em; line-height: 1.3; }
+    .previa-artigo h3 { font-size: 1.1rem; font-weight: 700; color: #062D44; margin-top: 1.4em; }
+    .previa-artigo ul { list-style: disc; padding-left: 1.3em; }
+    .previa-artigo ol { list-style: decimal; padding-left: 1.3em; }
+    .previa-artigo li + li { margin-top: 0.35em; }
+    .previa-artigo strong { color: #062D44; }
+    .previa-artigo a { color: #8f7440; text-decoration: underline; }
+    .previa-artigo blockquote { border-left: 3px solid #B5985E; padding-left: 1rem; color: #062D44; }
+    .previa-artigo hr { border: 0; border-top: 1px solid #e2e8f0; }
   </style>
 </head>
 
@@ -82,14 +93,14 @@
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 font-montserrat">E-mail de Acesso</label>
           <input type="email" id="login-email" required
             class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none transition"
-            placeholder="admin@institutocontextualize.com" value="admin@institutocontextualize.com" />
+            placeholder="admin@institutocontextualize.com" />
         </div>
 
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 font-montserrat">Senha</label>
           <input type="password" id="login-password" required
             class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none transition"
-            placeholder="••••••••" value="Admin@Contextualize2026" />
+            placeholder="••••••••" />
         </div>
 
         <button type="submit" id="btn-login-submit"
@@ -159,21 +170,9 @@
             class="sidebar-item w-full flex items-center justify-between px-3.5 py-3 rounded-2xl font-montserrat text-xs font-bold uppercase tracking-wider transition-all duration-200">
             <div class="flex items-center gap-3">
               <span class="material-symbols-outlined text-xl">article</span>
-              <span>Blog & Artigos</span>
+              <span>Blog</span>
             </div>
-            <span id="count-blog" class="px-2 py-0.5 rounded-full text-[0.65rem] bg-white/20 text-white font-bold">0</span>
-          </button>
-
-          <div class="px-3 pt-3 pb-1 text-[0.65rem] font-bold uppercase tracking-widest text-slate-400 font-montserrat">
-            Automação & Redação
-          </div>
-
-          <button onclick="switchTab('ai')" id="tab-btn-ai"
-            class="sidebar-item w-full flex items-center justify-between px-3.5 py-3 rounded-2xl font-montserrat text-xs font-bold uppercase tracking-wider transition-all duration-200">
-            <div class="flex items-center gap-3">
-              <span class="material-symbols-outlined text-xl">auto_stories</span>
-              <span>Gerador de Conteúdo</span>
-            </div>
+            <span id="count-blog" class="hidden px-2 py-0.5 rounded-full text-[0.65rem] bg-[#B5985E] text-white font-bold" title="Aguardando revisão">0</span>
           </button>
 
           <div class="px-3 pt-3 pb-1 text-[0.65rem] font-bold uppercase tracking-widest text-slate-400 font-montserrat">
@@ -468,177 +467,38 @@
       </section>
 
       <!-- ========================================== -->
-      <!-- TAB 2: GESTÃO DO BLOG -->
+      <!-- TAB 2: BLOG (pautas da IA, revisão, agendamento e artigos no ar) -->
       <!-- ========================================== -->
       <section id="tab-blog" class="tab-content hidden space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
-          <div>
-            <span class="text-xs font-bold uppercase tracking-wider text-brand-gold font-montserrat">Blog & Notícias</span>
-            <h2 class="text-2xl font-bold text-brand-blue font-montserrat">Gestão de Artigos</h2>
-            <p class="text-xs sm:text-sm text-slate-500 mt-1">Selecione posts para aprovar em massa para as 09h00, excluir ou alterar data/hora manualmente.</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <button onclick="selectAllDraftsAndPrompt()" class="px-4 py-3 rounded-2xl font-montserrat text-xs font-bold uppercase tracking-wider bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 flex items-center gap-2 transition">
-              <span class="material-symbols-outlined text-base">checklist</span>
-              Selecionar Todos os Rascunhos
-            </button>
-            <button onclick="openBlogModal()" class="btn-blue px-5 py-3 rounded-2xl font-montserrat text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-md">
-              <span class="material-symbols-outlined text-base">post_add</span>
-              Criar Post Manual
-            </button>
-          </div>
-        </div>
 
-        <!-- Barra Suspensa de Ações em Massa (Aparece ao selecionar checkboxes) -->
-        <div id="bulk-actions-bar" class="hidden bg-[#062D44] text-white p-4 sm:p-5 rounded-3xl shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 border border-white/10 transition-all">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-xl bg-[#B5985E] text-white flex items-center justify-center font-bold font-montserrat text-sm" id="bulk-count">0</div>
-            <div>
-              <h4 class="font-bold text-sm font-montserrat">Posts Selecionados</h4>
-              <p class="text-xs text-slate-300">Escolha uma ação em lote para aplicar imediatamente:</p>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-2.5 flex-wrap">
-            <button onclick="applyBulkAction('approve_schedule')" class="btn-gold px-4 py-2.5 rounded-xl font-montserrat text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md">
-              <span class="material-symbols-outlined text-base">schedule_send</span>
-              <span>Aprovar Todos (Agendar 12h00)</span>
-            </button>
-            
-            <button onclick="openBulkScheduleModal()" class="px-4 py-2.5 rounded-xl font-montserrat text-xs font-bold uppercase tracking-wider bg-white/15 hover:bg-white/25 text-white border border-white/20 flex items-center gap-1.5 transition">
-              <span class="material-symbols-outlined text-base">edit_calendar</span>
-              <span>Alterar Data/Hora Manual</span>
-            </button>
-
-            <button onclick="applyBulkAction('to_draft')" class="px-3.5 py-2.5 rounded-xl font-montserrat text-xs font-bold uppercase tracking-wider bg-white/10 hover:bg-white/20 text-slate-200 border border-white/10 flex items-center gap-1.5 transition">
-              <span class="material-symbols-outlined text-base">draft</span>
-              <span>Mover p/ Rascunho</span>
-            </button>
-
-            <button onclick="applyBulkAction('delete')" class="px-3.5 py-2.5 rounded-xl font-montserrat text-xs font-bold uppercase tracking-wider bg-red-500/80 hover:bg-red-600 text-white flex items-center gap-1.5 transition">
-              <span class="material-symbols-outlined text-base">delete</span>
-              <span>Excluir em Massa</span>
-            </button>
-
-            <button onclick="clearAllSelections()" class="px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition">
-              Limpar Seleção
-            </button>
-          </div>
-        </div>
-
-        <!-- Tabela Ampla e Confortável de Posts -->
-        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
-              <thead class="bg-slate-50 border-b border-slate-200 text-xs uppercase font-montserrat font-bold text-slate-500">
-                <tr>
-                  <th class="px-4 py-4 w-12 text-center">
-                    <input type="checkbox" id="select-all-posts" onchange="toggleSelectAllPosts(this)" class="w-4 h-4 rounded text-brand-gold focus:ring-brand-gold cursor-pointer" />
-                  </th>
-                  <th class="px-4 py-4">Artigo & Categoria</th>
-                  <th class="px-4 py-4">Autor</th>
-                  <th class="px-4 py-4">Data e Hora Programada</th>
-                  <th class="px-4 py-4">Acessos</th>
-                  <th class="px-4 py-4">Status</th>
-                  <th class="px-6 py-4 text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody id="blog-table-body" class="divide-y divide-slate-100 font-manrope">
-                <!-- Linhas geradas via JS -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================== -->
-      <!-- TAB 3: GERADOR DE CONTEÚDO (IA) -->
-      <!-- ========================================== -->
-      <section id="tab-ai" class="tab-content hidden space-y-8">
-        
-        <!-- Banner Principal do Gerador -->
-        <div class="bg-gradient-to-r from-brand-blue via-slate-900 to-[#001828] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-          <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div class="max-w-3xl">
-              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-gold text-white font-montserrat mb-3">
-                <span class="material-symbols-outlined text-xs">auto_awesome</span>
-                Inteligência Científica & SEO
-              </span>
-              <h2 class="text-2xl sm:text-3xl font-extrabold font-montserrat mb-2">Gerador de Conteúdo Científico</h2>
-              <p class="text-sm text-slate-300 leading-relaxed font-manrope">
-                A IA pesquisa na web o que está acontecendo em <strong>saúde mental, psicologia, bem-estar e qualidade de vida</strong>, traz <strong>10 pautas com fatos e fontes reais</strong> e dá uma nota de 0 a 10 para cada uma. Escolha as pautas e gere os artigos: eles entram como rascunho, de segunda a sexta às 12h, e só vão ao ar depois de aprovados. Toda segunda às 9h isso acontece sozinho com as 5 melhores.
+        <!-- Lista de artigos por situação -->
+        <div id="blog-lista" class="space-y-6">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-6 sm:p-7 rounded-3xl border border-slate-200/80 shadow-sm">
+            <div class="max-w-2xl">
+              <span class="text-xs font-bold uppercase tracking-wider text-brand-gold font-montserrat">Blog</span>
+              <h2 class="text-2xl font-bold text-brand-blue font-montserrat">Pautas e artigos</h2>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed">
+                Toda segunda às 9h (Brasília) a IA pesquisa na web o que está acontecendo em saúde mental, psicologia, bem-estar e qualidade de vida e prepara 5 artigos com fontes para a semana, de segunda a sexta às 12h. Eles só vão ao ar depois de aprovados. Clique em um artigo para ler, editar e escolher entre publicar agora ou na data e hora definida.
               </p>
             </div>
-
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <button onclick="scanNewsForSelection()" id="btn-scan-news"
-                class="btn-gold px-6 py-4 rounded-2xl font-montserrat font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-brand-gold/30">
-                <span class="material-symbols-outlined text-lg">travel_explore</span>
-                <span>Pesquisar Pautas</span>
+            <div class="flex flex-col sm:flex-row gap-3 flex-shrink-0">
+              <button onclick="gerarPautas(this)" class="btn-gold px-5 py-3 rounded-2xl font-montserrat text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md">
+                <span class="material-symbols-outlined text-base">auto_awesome</span>
+                <span>Gerar 5 pautas agora</span>
               </button>
-
-              <button onclick="triggerAIManualRun()" id="btn-trigger-ai"
-                class="px-5 py-4 rounded-2xl font-montserrat font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 transition">
-                <span class="material-symbols-outlined text-lg">bolt</span>
-                <span>Gerar Direto (Top 5)</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Painel de Notícias Encontradas (Para o Usuário Escolher e Trocar) -->
-        <div id="news-selection-section" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
-            <div>
-              <span class="text-xs font-bold uppercase tracking-wider text-brand-gold font-montserrat">Pautas Identificadas</span>
-              <h3 class="text-xl font-bold text-brand-blue font-montserrat">Pautas pesquisadas na web</h3>
-              <p class="text-xs text-slate-500 mt-0.5">Selecione ou troque as pautas que deseja transformar em artigos densos (recomendado: 5 pautas).</p>
-            </div>
-
-            <div class="flex items-center gap-3 flex-wrap">
-              <span id="selected-news-badge" class="px-3.5 py-1.5 rounded-full text-xs font-bold font-montserrat bg-brand-gold/15 text-brand-gold border border-brand-gold/30">
-                0 selecionadas
-              </span>
-
-              <button onclick="generatePostsFromSelected()" id="btn-generate-selected"
-                class="btn-blue px-5 py-2.5 rounded-xl font-montserrat text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-sm disabled:opacity-50">
-                <span class="material-symbols-outlined text-base">create</span>
-                <span>Gerar Posts Selecionados</span>
+              <button onclick="abrirPost('novo')" class="btn-blue px-5 py-3 rounded-2xl font-montserrat text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md">
+                <span class="material-symbols-outlined text-base">post_add</span>
+                <span>Novo artigo</span>
               </button>
             </div>
           </div>
 
-          <div id="news-list-container" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div class="col-span-full text-center py-12 text-slate-400">
-              <span class="material-symbols-outlined text-4xl mb-2 text-slate-300">manage_search</span>
-              <p class="text-sm">Clique em <strong>"Pesquisar Pautas"</strong> para a IA pesquisar a web e sugerir as pautas da semana (leva de 1 a 3 minutos).</p>
-            </div>
-          </div>
+          <div id="blog-aviso-execucao" class="hidden"></div>
+          <div id="blog-grupos" class="space-y-8"></div>
         </div>
 
-        <!-- Histórico de Varreduras e Gerações -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <div class="flex items-center gap-3">
-              <div class="p-2.5 rounded-xl bg-blue-50 text-brand-blue">
-                <span class="material-symbols-outlined">history</span>
-              </div>
-              <div>
-                <h4 class="font-bold text-brand-blue font-montserrat text-base">Histórico de Varreduras e Gerações</h4>
-                <p class="text-xs text-slate-500">Registros de execuções da inteligência analítica</p>
-              </div>
-            </div>
-            <button onclick="loadAILogs()" class="text-xs text-slate-500 hover:text-brand-blue flex items-center gap-1 font-montserrat font-bold">
-              <span class="material-symbols-outlined text-sm">refresh</span>
-              Atualizar
-            </button>
-          </div>
-
-          <div id="ai-logs-container" class="space-y-3 max-h-96 overflow-y-auto pr-1">
-            <!-- Logs dinâmicos -->
-          </div>
-        </div>
-
+        <!-- Editor de um artigo -->
+        <div id="blog-editor" class="hidden space-y-6"></div>
       </section>
 
       <!-- ========================================== -->
@@ -858,156 +718,11 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- MODAL: BLOG (ADICIONAR / EDITAR COM SELEÇÃO DE AUTOR) -->
-  <!-- ========================================== -->
-  <div id="modal-blog" class="fixed inset-0 z-50 hidden bg-brand-blue/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-    <div class="w-full max-w-4xl bg-white rounded-3xl p-6 md:p-8 shadow-2xl my-8 relative max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
-        <h3 id="modal-blog-title" class="text-lg font-bold text-brand-blue font-montserrat">Artigo de Blog</h3>
-        <button onclick="closeBlogModal()" class="text-slate-400 hover:text-slate-600">
-          <span class="material-symbols-outlined">close</span>
-        </button>
-      </div>
-
-      <form id="form-blog" class="space-y-4">
-        <input type="hidden" id="blog-id" />
-
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1 font-montserrat">Título do Artigo *</label>
-          <input type="text" id="blog-title" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none" placeholder="Ex: Descobertas Recentes sobre Terapia de Aceitação e Compromisso..." />
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <!-- SELEÇÃO DE AUTOR DENTRE OS PROFISSIONAIS CADASTRADOS -->
-          <div class="md:col-span-2">
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1 font-montserrat">Autor do Artigo *</label>
-            <select id="blog-author" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none bg-white">
-              <option value="Instituto Contextualize">Instituto Contextualize (Equipe Geral)</option>
-              <!-- Preenchido dinamicamente com profissionais cadastrados -->
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1 font-montserrat">Categoria</label>
-            <input type="text" id="blog-category" value="Psicologia Clínica" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none" />
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1 font-montserrat">Data e Hora de Publicação</label>
-            <input type="datetime-local" id="blog-date" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none" />
-            <span class="text-[10px] text-slate-400 block mt-1">Padrão para agendados: 09h00. Altere livremente data e hora se desejar.</span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1 font-montserrat">Status de Publicação</label>
-            <select id="blog-status" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none bg-white">
-              <option value="draft">Rascunho (Aguardando Aprovação)</option>
-              <option value="scheduled">Programado (Publica sozinho às 09h00)</option>
-              <option value="published">Publicado Imediatamente no Site</option>
-            </select>
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1 font-montserrat">Tags (separadas por vírgula)</label>
-            <input type="text" id="blog-tags" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none" placeholder="ACT, Ansiedade, Neuropsicologia" />
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1 font-montserrat">Resumo (Excerpt)</label>
-          <textarea id="blog-excerpt" rows="2" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none" placeholder="Breve introdução atraente de 2 a 3 frases..."></textarea>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1 font-montserrat">Conteúdo Completo (Markdown / Extenso) *</label>
-          <textarea id="blog-content" required rows="9" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none font-mono" placeholder="Escreva o artigo completo com introdução, subtítulos (##), tópicos e conclusão..."></textarea>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1 font-montserrat">Imagem de Capa</label>
-            <div class="flex items-center gap-2">
-              <input type="text" id="blog-cover" class="flex-grow px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none" placeholder="Atendimento.jpeg ou URL" />
-              <label class="btn-blue px-3 py-2.5 rounded-xl text-xs cursor-pointer flex items-center gap-1 font-medium whitespace-nowrap">
-                <span class="material-symbols-outlined text-sm">upload</span>
-                Upload
-                <input type="file" id="blog-cover-file" accept="image/*" class="hidden" onchange="uploadImage(this, 'blog-cover')" />
-              </label>
-            </div>
-          </div>
-
-          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
-            <label class="block text-[11px] font-bold text-slate-500 uppercase">Título SEO</label>
-            <input type="text" id="blog-seo-title" class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-brand-gold focus:outline-none" placeholder="Título SEO (máx 65 carac.)" />
-          </div>
-
-          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
-            <label class="block text-[11px] font-bold text-slate-500 uppercase">Fontes consultadas</label>
-            <textarea id="blog-sources" rows="3" class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-brand-gold focus:outline-none font-mono" placeholder="Uma por linha: Título da fonte | https://endereco.da.fonte"></textarea>
-            <p class="text-[11px] text-slate-400 mt-1">Aparecem no fim do artigo. Nos artigos da IA, confira os fatos e as fontes antes de aprovar.</p>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-          <button type="button" onclick="closeBlogModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold uppercase font-montserrat text-slate-500 hover:bg-slate-100">
-            Cancelar
-          </button>
-          <button type="submit" class="btn-blue px-6 py-2.5 rounded-xl text-xs font-bold uppercase font-montserrat">
-            Salvar Artigo
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- MODAL: AGENDAMENTO MANUAL EM MASSA -->
-  <!-- ========================================== -->
-  <div id="modal-bulk-schedule" class="fixed inset-0 z-50 hidden bg-brand-blue/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-white rounded-3xl p-6 md:p-8 shadow-2xl relative">
-      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
-        <div>
-          <span class="text-[10px] font-bold uppercase text-brand-gold font-montserrat tracking-wider">Ação em Massa</span>
-          <h3 class="text-lg font-bold text-brand-blue font-montserrat">Definir Data e Hora Manual</h3>
-        </div>
-        <button onclick="closeBulkScheduleModal()" class="text-slate-400 hover:text-slate-600">
-          <span class="material-symbols-outlined">close</span>
-        </button>
-      </div>
-
-      <p class="text-xs text-slate-600 mb-4 font-manrope leading-relaxed">
-        Defina a data e a hora exata para publicação dos <strong id="bulk-schedule-count" class="text-brand-blue">0</strong> artigos selecionados. Eles serão programados e publicados automaticamente no momento indicado.
-      </p>
-
-      <form id="form-bulk-schedule" onsubmit="submitBulkSchedule(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1 font-montserrat">Data e Hora para Publicação *</label>
-          <input type="datetime-local" id="bulk-target-datetime" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none" />
-          <span class="text-[10px] text-slate-400 block mt-1">Ex: se deixar 09h00, será publicado às 09h00 do dia escolhido.</span>
-        </div>
-
-        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-          <button type="button" onclick="closeBulkScheduleModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold uppercase font-montserrat text-slate-500 hover:bg-slate-100">
-            Cancelar
-          </button>
-          <button type="submit" class="btn-gold px-5 py-2.5 rounded-xl text-xs font-bold uppercase font-montserrat flex items-center gap-1.5 shadow-md">
-            <span class="material-symbols-outlined text-base">schedule_send</span>
-            <span>Programar Todos</span>
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <!-- Scripts do Painel Administrativo -->
   <script>
     const API_BASE = '/api';
     let currentToken = localStorage.getItem('contextualize_token');
     let loadedProfessionalsList = [];
-    let currentScannedNews = [];
 
     document.addEventListener('DOMContentLoaded', () => {
       checkAuth();
@@ -1067,45 +782,6 @@
           if (!res.ok) throw new Error('Erro ao salvar profissional');
           closeProfessionalModal();
           loadProfessionals();
-        } catch (err) {
-          alert(err.message);
-        }
-      });
-
-      // Salvar Post de Blog
-      document.getElementById('form-blog').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('blog-id').value;
-        const tags = document.getElementById('blog-tags').value.split(',').map(t => t.trim()).filter(Boolean);
-        const payload = {
-          title: document.getElementById('blog-title').value,
-          author_name: document.getElementById('blog-author').value,
-          category: document.getElementById('blog-category').value,
-          scheduled_for: document.getElementById('blog-date').value,
-          status: document.getElementById('blog-status').value,
-          excerpt: document.getElementById('blog-excerpt').value,
-          content: document.getElementById('blog-content').value,
-          cover_image: document.getElementById('blog-cover').value,
-          tags: tags,
-          seo_title: document.getElementById('blog-seo-title').value,
-          sources: document.getElementById('blog-sources').value.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
-            const i = l.lastIndexOf('|');
-            return i >= 0 ? { titulo: l.slice(0, i).trim(), url: l.slice(i + 1).trim() } : { titulo: '', url: l };
-          }).filter(f => /^https?:\/\//.test(f.url))
-        };
-
-        const method = id ? 'PUT' : 'POST';
-        const url = id ? `${API_BASE}/admin/blog/${id}` : `${API_BASE}/admin/blog`;
-
-        try {
-          const res = await authFetch(url, {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          if (!res.ok) throw new Error('Erro ao salvar artigo');
-          closeBlogModal();
-          loadBlogPosts();
         } catch (err) {
           alert(err.message);
         }
@@ -1179,8 +855,6 @@
       loadProfessionals();
       loadBlogPosts();
       loadAllSettings();
-      loadAILogs();
-      loadLatestNewsFromDB();
     }
 
     function logout() {
@@ -1322,11 +996,11 @@
                 </h4>
               </div>
               <div class="flex items-center gap-2 flex-shrink-0">
-                <button onclick="quickApprovePost(${p.id})" class="btn-gold px-3.5 py-1.5 rounded-xl font-montserrat text-xs font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm" title="Aprovar e agendar automaticamente para publicar sozinho às 09h00">
+                <button onclick="quickApprovePost(${p.id})" class="btn-gold px-3.5 py-1.5 rounded-xl font-montserrat text-xs font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm" title="Aprovar mantendo a data sugerida">
                   <span class="material-symbols-outlined text-xs">schedule_send</span>
-                  <span>Aprovar 09h00</span>
+                  <span>Aprovar</span>
                 </button>
-                <button onclick="switchTab('blog');" class="p-1.5 rounded-xl text-slate-500 hover:text-brand-blue hover:bg-slate-200/60 transition" title="Revisar no Blog">
+                <button onclick="abrirPost(${p.id})" class="p-1.5 rounded-xl text-slate-500 hover:text-brand-blue hover:bg-slate-200/60 transition" title="Ler e editar">
                   <span class="material-symbols-outlined text-sm">edit</span>
                 </button>
               </div>
@@ -1389,24 +1063,6 @@
 
       html += `</div>`;
       container.innerHTML = html;
-    }
-
-    async function quickApprovePost(id) {
-      try {
-        const res = await authFetch(`${API_BASE}/admin/blog/bulk-action`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'approve_schedule', ids: [id] })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Erro ao aprovar artigo');
-        
-        alert('Post aprovado com sucesso! Ele foi programado para ser publicado sozinho na data específica às 12h00 (meio-dia).');
-        loadDashboardData();
-        loadBlogPosts();
-      } catch (err) {
-        alert(err.message);
-      }
     }
 
     // ==========================================
@@ -1516,566 +1172,493 @@
     }
 
     // ==========================================
-    // GESTÃO DO BLOG & AÇÕES EM MASSA
+    // BLOG: pautas da IA, revisão, agendamento e artigos no ar
     // ==========================================
-    let selectedBlogIds = new Set();
+    let blogPosts = [];
+    let postAtual = null;
 
-    function updateBulkBarState() {
-      const bar = document.getElementById('bulk-actions-bar');
-      const countEl = document.getElementById('bulk-count');
-      const selectAllMaster = document.getElementById('select-all-posts');
-      const checkboxes = document.querySelectorAll('.post-checkbox');
-
-      if (!bar || !countEl) return;
-
-      countEl.textContent = selectedBlogIds.size;
-
-      if (selectedBlogIds.size > 0) {
-        bar.classList.remove('hidden');
-      } else {
-        bar.classList.add('hidden');
-      }
-
-      if (selectAllMaster) {
-        selectAllMaster.checked = checkboxes.length > 0 && selectedBlogIds.size === checkboxes.length;
-        selectAllMaster.indeterminate = selectedBlogIds.size > 0 && selectedBlogIds.size < checkboxes.length;
-      }
-    }
-
-    function toggleSelectAllPosts(masterCheckbox) {
-      const checkboxes = document.querySelectorAll('.post-checkbox');
-      checkboxes.forEach(cb => {
-        cb.checked = masterCheckbox.checked;
-        const id = parseInt(cb.value, 10);
-        if (masterCheckbox.checked) {
-          selectedBlogIds.add(id);
-        } else {
-          selectedBlogIds.delete(id);
-        }
-      });
-      updateBulkBarState();
-    }
-
-    function onPostCheckboxChange(cb) {
-      const id = parseInt(cb.value, 10);
-      if (cb.checked) {
-        selectedBlogIds.add(id);
-      } else {
-        selectedBlogIds.delete(id);
-      }
-      updateBulkBarState();
-    }
-
-    function clearAllSelections() {
-      selectedBlogIds.clear();
-      document.querySelectorAll('.post-checkbox').forEach(cb => cb.checked = false);
-      const master = document.getElementById('select-all-posts');
-      if (master) {
-        master.checked = false;
-        master.indeterminate = false;
-      }
-      updateBulkBarState();
-    }
-
-    function selectAllDraftsAndPrompt() {
-      selectedBlogIds.clear();
-      const checkboxes = document.querySelectorAll('.post-checkbox');
-      let draftsCount = 0;
-      checkboxes.forEach(cb => {
-        if (cb.dataset.status === 'draft') {
-          cb.checked = true;
-          selectedBlogIds.add(parseInt(cb.value, 10));
-          draftsCount++;
-        } else {
-          cb.checked = false;
-        }
-      });
-      updateBulkBarState();
-
-      if (draftsCount === 0) {
-        alert('Não há rascunhos disponíveis para seleção no momento.');
-      }
-    }
-
-    async function applyBulkAction(action, target_date = null) {
-      if (selectedBlogIds.size === 0) {
-        alert('Selecione pelo menos um artigo.');
-        return;
-      }
-
-      const ids = Array.from(selectedBlogIds);
-
-      if (action === 'delete') {
-        if (!confirm(`Deseja realmente excluir ${ids.length} artigo(s) selecionado(s)? Esta ação não pode ser desfeita.`)) {
-          return;
-        }
-      } else if (action === 'approve_schedule') {
-        const msg = target_date 
-          ? `Deseja aprovar e programar ${ids.length} artigo(s) para ${new Date(target_date).toLocaleString('pt-BR')}?`
-          : `Deseja aprovar ${ids.length} artigo(s)? Eles serão programados para serem publicados sozinhos no dia específico às 09h00.`;
-        if (!confirm(msg)) return;
-      }
-
-      try {
-        const res = await authFetch(`${API_BASE}/admin/blog/bulk-action`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action, ids, target_date })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Erro ao processar ação em massa');
-
-        alert(data.message || 'Ação concluída com sucesso!');
-        clearAllSelections();
-        loadBlogPosts();
-        loadDashboardData();
-      } catch (err) {
-        alert(err.message);
-      }
-    }
-
-    function openBulkScheduleModal() {
-      if (selectedBlogIds.size === 0) {
-        alert('Selecione pelo menos um artigo para alterar data e hora.');
-        return;
-      }
-      document.getElementById('bulk-schedule-count').textContent = selectedBlogIds.size;
-      
-      const d = new Date();
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      document.getElementById('bulk-target-datetime').value = `${yyyy}-${mm}-${dd}T09:00`;
-
-      document.getElementById('modal-bulk-schedule').classList.remove('hidden');
-    }
-
-    function closeBulkScheduleModal() {
-      document.getElementById('modal-bulk-schedule').classList.add('hidden');
-    }
-
-    function submitBulkSchedule(e) {
-      e.preventDefault();
-      const targetDate = document.getElementById('bulk-target-datetime').value;
-      if (!targetDate) {
-        alert('Informe a data e hora desejada.');
-        return;
-      }
-      closeBulkScheduleModal();
-      applyBulkAction('approve_schedule', targetDate);
-    }
-
-    async function loadBlogPosts() {
-      try {
-        const res = await authFetch(`${API_BASE}/admin/blog`);
-        const posts = await res.json();
-        document.getElementById('count-blog').textContent = posts.length;
-
-        const tbody = document.getElementById('blog-table-body');
-        tbody.innerHTML = '';
-
-        posts.forEach(p => {
-          const tr = document.createElement('tr');
-          tr.className = 'hover:bg-slate-50/70 transition';
-          
-          let scheduleFormatted = '-';
-          if (p.scheduled_for) {
-            const dt = new Date(p.scheduled_for);
-            scheduleFormatted = dt.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
-          }
-
-          const isPublished = p.status === 'published';
-          const isScheduled = p.status === 'scheduled';
-          const isDraft = p.status === 'draft';
-          const isChecked = selectedBlogIds.has(p.id);
-
-          let statusBadge = '';
-          if (isPublished) {
-            statusBadge = `
-              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold font-montserrat bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                Publicado
-              </span>
-            `;
-          } else if (isScheduled) {
-            statusBadge = `
-              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold font-montserrat bg-blue-50 text-blue-800 border border-blue-200" title="Publica automaticamente no horário agendado">
-                <span class="material-symbols-outlined text-xs text-blue-600">schedule</span>
-                Programado (09h00)
-              </span>
-            `;
-          } else {
-            statusBadge = `
-              <div class="flex items-center gap-1.5">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold font-montserrat bg-amber-50 text-amber-800 border border-amber-200">
-                  <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                  Rascunho
-                </span>
-                <button onclick="quickApprovePost(${p.id})" class="p-1 px-2 rounded-lg bg-brand-gold text-white text-[10px] font-bold font-montserrat uppercase hover:brightness-110 shadow-xs" title="Aprovar e agendar para publicar sozinho às 09h00">
-                  Aprovar (09h)
-                </button>
-              </div>
-            `;
-          }
-
-          tr.innerHTML = `
-            <td class="px-4 py-4 text-center">
-              <input type="checkbox" class="post-checkbox w-4 h-4 rounded text-brand-gold focus:ring-brand-gold cursor-pointer" 
-                value="${p.id}" data-status="${p.status}" ${isChecked ? 'checked' : ''} onchange="onPostCheckboxChange(this)" />
-            </td>
-            <td class="px-4 py-4">
-              <div class="flex items-center gap-3">
-                <img src="/${p.cover_image || 'Atendimento.jpeg'}" alt="" class="w-12 h-12 rounded-xl object-cover flex-shrink-0" onerror="this.src='/Atendimento.jpeg'" />
-                <div class="max-w-md">
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-brand-gold font-montserrat block">${p.category || 'Psicologia'}</span>
-                  <a href="/blog/${p.slug}" target="_blank" class="font-bold text-brand-blue hover:text-brand-gold transition line-clamp-1">
-                    ${p.title}
-                  </a>
-                </div>
-              </div>
-            </td>
-            <td class="px-4 py-4 text-xs text-slate-600 font-medium whitespace-nowrap">
-              ${p.author_name || 'Instituto Contextualize'}
-            </td>
-            <td class="px-4 py-4 text-xs text-slate-600 whitespace-nowrap">
-              <span class="font-medium">${scheduleFormatted}</span>
-            </td>
-            <td class="px-4 py-4 whitespace-nowrap">
-              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold font-montserrat bg-slate-100 text-slate-700">
-                <span class="material-symbols-outlined text-xs text-slate-500">visibility</span>
-                ${(p.views_count || 0).toLocaleString('pt-BR')}
-              </span>
-            </td>
-            <td class="px-4 py-4 whitespace-nowrap">
-              ${statusBadge}
-            </td>
-            <td class="px-6 py-4 text-right whitespace-nowrap">
-              <div class="flex items-center justify-end gap-1.5">
-                <a href="/blog/${p.slug}" target="_blank" class="p-2 rounded-xl text-slate-500 hover:text-brand-blue hover:bg-slate-100 transition" title="Ver post">
-                  <span class="material-symbols-outlined text-sm">visibility</span>
-                </a>
-                <button onclick="editBlogPost(${JSON.stringify(p).replace(/"/g, '&quot;')})" class="p-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-brand-blue transition" title="Editar">
-                  <span class="material-symbols-outlined text-sm">edit</span>
-                </button>
-                <button onclick="deleteBlogPost(${p.id})" class="p-2 rounded-xl text-red-500 hover:bg-red-50 transition" title="Excluir">
-                  <span class="material-symbols-outlined text-sm">delete</span>
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
-
-        updateBulkBarState();
-      } catch (err) {
-        console.error('Erro ao carregar posts:', err);
-      }
-    }
-
-    function openBlogModal(post = null) {
-      document.getElementById('form-blog').reset();
-      document.getElementById('blog-id').value = post ? post.id : '';
-      document.getElementById('modal-blog-title').textContent = post ? 'Editar Artigo' : 'Novo Artigo de Blog';
-
-      updateAuthorSelectOptions(post ? post.author_name : '');
-
-      if (post) {
-        document.getElementById('blog-title').value = post.title;
-        document.getElementById('blog-category').value = post.category || '';
-        document.getElementById('blog-status').value = post.status || 'draft';
-        document.getElementById('blog-excerpt').value = post.excerpt || '';
-        document.getElementById('blog-content').value = post.content || '';
-        document.getElementById('blog-cover').value = post.cover_image || '';
-        document.getElementById('blog-tags').value = Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags || '');
-        document.getElementById('blog-seo-title').value = post.seo_title || '';
-        document.getElementById('blog-sources').value = (Array.isArray(post.sources) ? post.sources : [])
-          .map(f => f.titulo ? `${f.titulo} | ${f.url}` : f.url).join('\n');
-
-        if (post.scheduled_for) {
-          const d = new Date(post.scheduled_for);
-          const yyyy = d.getFullYear();
-          const mm = String(d.getMonth() + 1).padStart(2, '0');
-          const dd = String(d.getDate()).padStart(2, '0');
-          const hh = String(d.getHours()).padStart(2, '0');
-          const min = String(d.getMinutes()).padStart(2, '0');
-          document.getElementById('blog-date').value = `${yyyy}-${mm}-${dd}T${hh}:${min}`;
-        } else {
-          const d = new Date();
-          const yyyy = d.getFullYear();
-          const mm = String(d.getMonth() + 1).padStart(2, '0');
-          const dd = String(d.getDate()).padStart(2, '0');
-          document.getElementById('blog-date').value = `${yyyy}-${mm}-${dd}T09:00`;
-        }
-      } else {
-        const d = new Date();
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
-        document.getElementById('blog-date').value = `${yyyy}-${mm}-${dd}T09:00`;
-      }
-
-      document.getElementById('modal-blog').classList.remove('hidden');
-    }
-
-    function closeBlogModal() {
-      document.getElementById('modal-blog').classList.add('hidden');
-    }
-
-    function editBlogPost(post) {
-      openBlogModal(post);
-    }
-
-    async function togglePostStatus(id, currentStatus) {
-      const newStatus = currentStatus === 'published' ? 'draft' : 'published';
-      try {
-        const res = await authFetch(`${API_BASE}/admin/blog/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: newStatus })
-        });
-        if (!res.ok) throw new Error('Erro ao alterar status');
-        loadBlogPosts();
-        loadDashboardData();
-      } catch (e) {
-        alert(e.message);
-      }
-    }
-
-    async function deleteBlogPost(id) {
-      if (!confirm('Deseja realmente excluir este artigo?')) return;
-      try {
-        const res = await authFetch(`${API_BASE}/admin/blog/${id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error('Erro ao excluir artigo.');
-        loadBlogPosts();
-        loadDashboardData();
-      } catch (e) {
-        alert(e.message);
-      }
-    }
-
-    async function deleteBlogPost(id) {
-      if (!confirm('Deseja realmente excluir este artigo?')) return;
-      try {
-        const res = await authFetch(`${API_BASE}/admin/blog/${id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error('Erro ao excluir artigo.');
-        loadBlogPosts();
-      } catch (e) {
-        alert(e.message);
-      }
-    }
-
-    // ==========================================
-    // GERADOR DE CONTEÚDO (IA - 20 NOTÍCIAS & SELEÇÃO)
-    // ==========================================
-    async function loadLatestNewsFromDB() {
-      try {
-        const res = await authFetch(`${API_BASE}/admin/ai/latest-news`);
-        const data = await res.json();
-        if (data.news && data.news.length > 0) {
-          currentScannedNews = data.news;
-          renderNewsSelectionGrid();
-        }
-      } catch (e) {
-        console.warn('Sem notícias salvas em cache:', e);
-      }
-    }
-
-    async function scanNewsForSelection() {
-      const btn = document.getElementById('btn-scan-news');
-      const originalText = btn.innerHTML;
-      btn.disabled = true;
-      btn.innerHTML = `<span class="loader"></span> Pesquisando na web...`;
-
-      try {
-        const res = await authFetch(`${API_BASE}/admin/ai/scan`, { method: 'POST' });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Falha ao buscar notícias');
-
-        currentScannedNews = data.news || [];
-        renderNewsSelectionGrid();
-        alert(`Pesquisa concluída! ${currentScannedNews.length} pautas com fontes foram encontradas e ranqueadas. As 5 melhores já vêm marcadas.`);
-      } catch (e) {
-        alert(`Erro na varredura: ${e.message}`);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
-      }
-    }
+    const CAPAS_PRONTAS = ['Psychologist_and_patient_talking_202608131705.jpeg', 'Atendimento.jpeg', 'Formação.jpeg', 'Hero Contextualize.webp'];
+    const ROTULO_SITUACAO = { revisao: 'Aguardando revisão', agendado: 'Agendado', 'no-ar': 'No ar', rascunho: 'Rascunho', arquivado: 'Arquivado' };
+    const COR_SITUACAO = {
+      revisao: 'bg-amber-50 text-amber-800 border-amber-200',
+      agendado: 'bg-blue-50 text-blue-800 border-blue-200',
+      'no-ar': 'bg-emerald-50 text-emerald-800 border-emerald-200',
+      rascunho: 'bg-slate-100 text-slate-600 border-slate-200',
+      arquivado: 'bg-slate-100 text-slate-500 border-slate-200'
+    };
 
     function escHtml(v) {
       return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
     }
 
-    function renderNewsSelectionGrid() {
-      const container = document.getElementById('news-list-container');
-      if (!currentScannedNews || currentScannedNews.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full text-center py-10 text-slate-400">
-            <span class="material-symbols-outlined text-4xl mb-2 text-slate-300">manage_search</span>
-            <p class="text-sm">Nenhuma pauta ainda. Clique em "Pesquisar Pautas".</p>
-          </div>
-        `;
-        updateSelectedCounter();
-        return;
-      }
-
-      container.innerHTML = currentScannedNews.map((item, idx) => {
-        const isChecked = item.recommended_for_post || false;
-        const score = item.relevance_score ? parseFloat(item.relevance_score).toFixed(1) : '8.0';
-
-        return `
-          <div class="p-5 rounded-2xl border transition ${isChecked ? 'bg-amber-50/40 border-brand-gold/60' : 'bg-slate-50/60 border-slate-200'} flex flex-col justify-between" id="news-card-${idx}">
-            <div>
-              <div class="flex items-start justify-between gap-3 mb-2">
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" onchange="toggleNewsItemSelection(${idx}, this.checked)" ${isChecked ? 'checked' : ''} class="w-4 h-4 text-brand-gold rounded border-slate-300 focus:ring-brand-gold" />
-                  <span class="text-xs font-bold uppercase tracking-wider text-brand-blue font-montserrat">Pauta #${idx + 1}</span>
-                </label>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold font-montserrat bg-[#B5985E]/15 text-[#B5985E] border border-[#B5985E]/30 whitespace-nowrap">
-                  ★ ${score}/10
-                </span>
-              </div>
-
-              <h4 class="font-bold text-sm text-brand-blue leading-snug mb-1 font-montserrat">
-                ${escHtml(item.title)}
-              </h4>
-              <p class="text-xs text-slate-400 mb-2 font-montserrat font-medium">${escHtml(item.category_suggestion || '')}${item.source ? ` · ${escHtml(item.source)}` : ''}</p>
-              <p class="text-xs text-slate-600 leading-relaxed font-manrope mb-3">
-                ${escHtml(item.summary || '')}
-              </p>
-              ${(item.fontes || []).length ? `<details class="text-[11px] text-slate-500 mb-3"><summary class="cursor-pointer font-bold text-brand-blue">${item.fontes.length} fonte(s)</summary><ul class="mt-1 space-y-1 list-disc pl-4">${item.fontes.map(f => `<li><a href="${escHtml(f.url)}" target="_blank" rel="noopener nofollow" class="underline hover:text-brand-gold break-all">${escHtml(f.titulo || f.url)}</a></li>`).join('')}</ul></details>` : ''}
-            </div>
-
-            <div class="pt-3 border-t border-slate-200/60 text-[11px] text-slate-500 font-manrope italic">
-              <strong>Avaliação IA:</strong> ${escHtml(item.score_justification || '')}
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      updateSelectedCounter();
+    function imgSrc(u) {
+      const s = String(u || 'Atendimento.jpeg');
+      if (/^https?:/.test(s)) return s;
+      return '/' + s.replace(/^\.?\//, '').split('/').map(encodeURIComponent).join('/');
     }
 
-    function toggleNewsItemSelection(idx, isSelected) {
-      if (currentScannedNews[idx]) {
-        currentScannedNews[idx].recommended_for_post = isSelected;
-        const card = document.getElementById(`news-card-${idx}`);
-        if (card) {
-          if (isSelected) {
-            card.classList.add('bg-amber-50/40', 'border-brand-gold/60');
-            card.classList.remove('bg-slate-50/60', 'border-slate-200');
-          } else {
-            card.classList.remove('bg-amber-50/40', 'border-brand-gold/60');
-            card.classList.add('bg-slate-50/60', 'border-slate-200');
-          }
+    function dataHoraBR(d) {
+      return new Date(d).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', weekday: 'short', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+    }
+
+    // datetime-local (horário do navegador) <-> ISO
+    function isoParaLocal(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      const p = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+    }
+    function localParaIso(v) {
+      if (!v) return null;
+      const d = new Date(v);
+      return Number.isNaN(d.getTime()) ? null : d.toISOString();
+    }
+
+    function situacao(p) {
+      const agora = Date.now();
+      const quando = p.scheduled_for ? new Date(p.scheduled_for).getTime() : null;
+      if (p.status === 'archived') return 'arquivado';
+      if (p.status === 'published') return 'no-ar';
+      if (p.status === 'scheduled') return quando && quando <= agora ? 'no-ar' : 'agendado';
+      return quando && quando > agora ? 'revisao' : 'rascunho';
+    }
+
+    // Markdown enxuto para a prévia (o mesmo que o site usa). Escapa todo HTML.
+    function markdownParaHtml(md) {
+      const linhas = String(md || '').replace(/\r\n?/g, '\n').split('\n');
+      const inline = s => escHtml(s)
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/(^|[^*])\*(?!\s)(.+?)\*(?!\*)/g, '$1<em>$2</em>')
+        .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener nofollow">$1</a>');
+      const out = [];
+      let lista = null, par = [];
+      const fechaPar = () => { if (par.length) { out.push(`<p>${inline(par.join(' '))}</p>`); par = []; } };
+      const fechaLista = () => { if (lista) { out.push(`</${lista}>`); lista = null; } };
+      for (const bruta of linhas) {
+        const l = bruta.trim();
+        let m;
+        if (!l) { fechaPar(); fechaLista(); continue; }
+        if (/^([-*_])(\s*\1){2,}$/.test(l)) { fechaPar(); fechaLista(); out.push('<hr />'); continue; }
+        if ((m = l.match(/^(#{1,4})\s+(.*)$/))) { fechaPar(); fechaLista(); const n = Math.max(2, Math.min(m[1].length, 3)); out.push(`<h${n}>${inline(m[2])}</h${n}>`); continue; }
+        if ((m = l.match(/^>\s?(.*)$/))) { fechaPar(); fechaLista(); out.push(`<blockquote>${inline(m[1])}</blockquote>`); continue; }
+        if ((m = l.match(/^[-*]\s+(.*)$/)) || (m = l.match(/^\d+[.)]\s+(.*)$/))) {
+          fechaPar();
+          const tipo = /^\d/.test(l) ? 'ol' : 'ul';
+          if (lista !== tipo) { fechaLista(); out.push(`<${tipo}>`); lista = tipo; }
+          out.push(`<li>${inline(m[1])}</li>`);
+          continue;
         }
-        updateSelectedCounter();
+        fechaLista();
+        par.push(l);
+      }
+      fechaPar(); fechaLista();
+      return out.join('\n');
+    }
+
+    async function apiJson(url, options = {}) {
+      if (options.body && typeof options.body !== 'string') {
+        options.headers = { ...(options.headers || {}), 'Content-Type': 'application/json' };
+        options.body = JSON.stringify(options.body);
+      }
+      const res = await authFetch(url, options);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Não foi possível concluir. Tente de novo.');
+      return data;
+    }
+
+    async function ocupado(botao, fn, texto = 'Aguarde...') {
+      const original = botao ? botao.innerHTML : '';
+      if (botao) { botao.disabled = true; botao.innerHTML = `<span class="loader"></span> ${texto}`; }
+      try { return await fn(); }
+      finally { if (botao) { botao.disabled = false; botao.innerHTML = original; } }
+    }
+
+    async function loadBlogPosts() {
+      try {
+        const [posts, logs] = await Promise.all([
+          apiJson(`${API_BASE}/admin/blog`),
+          apiJson(`${API_BASE}/admin/ai/logs`).catch(() => [])
+        ]);
+        blogPosts = posts;
+        const emRevisao = posts.filter(p => situacao(p) === 'revisao').length;
+        const contador = document.getElementById('count-blog');
+        contador.textContent = emRevisao;
+        contador.classList.toggle('hidden', !emRevisao);
+        renderAvisoExecucao(logs[0]);
+        renderListaBlog();
+      } catch (err) {
+        console.error('Erro ao carregar posts:', err);
       }
     }
 
-    function updateSelectedCounter() {
-      const selected = currentScannedNews.filter(n => n.recommended_for_post);
-      const badge = document.getElementById('selected-news-badge');
-      if (badge) {
-        badge.textContent = `${selected.length} pautas selecionadas`;
-      }
+    function renderAvisoExecucao(ult) {
+      const el = document.getElementById('blog-aviso-execucao');
+      if (!el) return;
+      if (!ult || ult.status === 'success') { el.classList.add('hidden'); return; }
+      el.className = 'p-4 rounded-2xl border bg-red-50 border-red-200 text-red-800 text-xs leading-relaxed';
+      el.innerHTML = `<strong>Última geração (${escHtml(new Date(ult.executed_at).toLocaleString('pt-BR'))}) falhou:</strong> ${escHtml(ult.error_message || 'erro desconhecido')}`;
     }
 
-    async function generatePostsFromSelected() {
-      const selected = currentScannedNews.filter(n => n.recommended_for_post);
-      if (selected.length === 0) {
-        alert('Por favor, marque pelo menos 1 pauta na lista para gerar os posts.');
+    function renderListaBlog() {
+      const alvo = document.getElementById('blog-grupos');
+      if (!alvo) return;
+      if (!blogPosts.length) {
+        alvo.innerHTML = `<div class="bg-white rounded-3xl p-10 border border-slate-200 text-center text-slate-400 text-sm">Nenhum artigo ainda. Gere as pautas da semana ou escreva o primeiro artigo.</div>`;
         return;
       }
+      const grupos = ['revisao', 'agendado', 'no-ar', 'rascunho', 'arquivado'];
+      alvo.innerHTML = grupos.map(g => {
+        const doGrupo = blogPosts.filter(p => situacao(p) === g);
+        if (!doGrupo.length) return '';
+        if (g === 'revisao' || g === 'agendado') doGrupo.sort((a, b) => new Date(a.scheduled_for) - new Date(b.scheduled_for));
+        return `
+          <div class="space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-montserrat">${ROTULO_SITUACAO[g]} (${doGrupo.length})</h3>
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm divide-y divide-slate-100 overflow-hidden">
+              ${doGrupo.map(linhaPost).join('')}
+            </div>
+          </div>`;
+      }).join('');
+    }
 
-      if (!confirm(`Confirma a redação automática de ${selected.length} artigos completos e densos baseados nas pautas selecionadas?`)) return;
+    function linhaPost(p) {
+      const s = situacao(p);
+      const quando = p.scheduled_for
+        ? `${s === 'no-ar' ? 'Publicado' : 'Publicação'} ${dataHoraBR(p.scheduled_for)}`
+        : 'Sem data';
+      const botao = (rotulo, acao, cls = 'bg-slate-100 text-slate-700 hover:bg-slate-200') =>
+        `<button type="button" onclick="${acao}" class="px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider font-montserrat transition ${cls}">${rotulo}</button>`;
+      return `
+        <article class="p-4 sm:p-5 flex flex-col md:flex-row md:items-center gap-4 hover:bg-slate-50/70 transition">
+          <button type="button" onclick="abrirPost(${p.id})" class="flex items-center gap-4 text-left flex-1 min-w-0">
+            <img src="${escHtml(imgSrc(p.cover_image))}" alt="" class="w-16 h-16 rounded-2xl object-cover flex-shrink-0 bg-slate-100" onerror="this.src='/Atendimento.jpeg'" />
+            <span class="min-w-0">
+              <span class="block font-bold text-brand-blue font-montserrat text-sm sm:text-base leading-snug line-clamp-2">${escHtml(p.title)}</span>
+              <span class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">
+                <span class="px-2 py-0.5 rounded-full border text-[10px] font-bold font-montserrat ${COR_SITUACAO[s]}">${ROTULO_SITUACAO[s]}</span>
+                <span>${escHtml(quando)}</span>
+                ${p.category ? `<span>· ${escHtml(p.category)}</span>` : ''}
+                ${p.origin === 'ia' ? '<span class="text-brand-gold font-semibold">· gerado por IA</span>' : ''}
+                ${s === 'no-ar' && p.views_count ? `<span>· ${Number(p.views_count).toLocaleString('pt-BR')} leituras</span>` : ''}
+              </span>
+            </span>
+          </button>
+          <div class="flex flex-wrap items-center gap-2 md:justify-end flex-shrink-0">
+            ${s === 'revisao' ? botao('Aprovar', `aprovarPost(${p.id}, this)`, 'btn-gold') : ''}
+            ${s !== 'no-ar' ? botao('Publicar agora', `publicarAgora(${p.id}, this)`) : ''}
+            ${s === 'no-ar' ? `<a href="/blog/${encodeURIComponent(p.slug)}" target="_blank" rel="noopener" class="px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider font-montserrat bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Ver</a>` : ''}
+            ${botao(s === 'revisao' ? 'Ler e editar' : 'Editar', `abrirPost(${p.id})`, 'btn-blue')}
+          </div>
+        </article>`;
+    }
 
-      const btn = document.getElementById('btn-generate-selected');
-      const originalText = btn.innerHTML;
-      btn.disabled = true;
-      btn.innerHTML = `<span class="loader"></span> Redigindo artigos com IA...`;
+    async function salvarPost(dados) {
+      return apiJson(`${API_BASE}/admin/blog/${dados.id}`, { method: 'PUT', body: dados });
+    }
 
+    async function aprovarPost(id, botao) {
+      const p = blogPosts.find(x => x.id === id);
+      if (!p || !p.scheduled_for || new Date(p.scheduled_for) <= new Date()) {
+        abrirPost(id);
+        return alert('Escolha a data e a hora de publicação e clique em "Aprovar e agendar".');
+      }
       try {
-        const res = await authFetch(`${API_BASE}/admin/ai/generate-selected`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ selected_news: selected })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Falha ao gerar artigos');
-
-        alert(`${data.result.message || `${data.result.posts_created} artigos criados.`} Eles estão como Rascunho: revise os fatos e as fontes e aprove.`);
+        await ocupado(botao, () => salvarPost({ id, status: 'scheduled' }));
+        alert(`Aprovado. Entra no ar em ${dataHoraBR(p.scheduled_for)}.`);
         loadBlogPosts();
-        loadAILogs();
-        switchTab('blog');
+        loadDashboardData();
+      } catch (e) { alert(e.message); }
+    }
+
+    async function publicarAgora(id, botao) {
+      const p = blogPosts.find(x => x.id === id);
+      if (!confirm(`Publicar “${p ? p.title : 'este artigo'}” agora?`)) return;
+      try {
+        await ocupado(botao, () => salvarPost({ id, status: 'published', scheduled_for: new Date().toISOString() }));
+        alert('Publicado. Aparece no site em até 2 minutos.');
+        loadBlogPosts();
+        loadDashboardData();
+      } catch (e) { alert(e.message); }
+    }
+
+    // Dashboard: aprovação rápida mantendo a data sugerida
+    async function quickApprovePost(id) {
+      if (!blogPosts.length) await loadBlogPosts();
+      return aprovarPost(id, null);
+    }
+
+    async function gerarPautas(botao) {
+      if (!confirm('Pesquisar na web e gerar 5 artigos agora? Leva de 2 a 5 minutos.')) return;
+      const texto = 'Pesquisando e escrevendo...';
+      try {
+        let r = await ocupado(botao, () => apiJson(`${API_BASE}/admin/ai/run-now`, { method: 'POST', body: {} }), texto);
+        if (r.result && r.result.pulado) {
+          if (!confirm(`${r.message} Gerar mais 5 mesmo assim?`)) return;
+          r = await ocupado(botao, () => apiJson(`${API_BASE}/admin/ai/run-now`, { method: 'POST', body: { forcar: true } }), texto);
+        }
+        alert(`${r.message || 'Pautas geradas.'} Eles estão em "Aguardando revisão": leia, confira as fontes e aprove.`);
       } catch (e) {
         alert(`Erro na geração: ${e.message}`);
       } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
-      }
-    }
-
-    async function triggerAIManualRun() {
-      if (!confirm('Pesquisar pautas na web e escrever as 5 melhores agora? Leva de 2 a 5 minutos.')) return;
-      const btn = document.getElementById('btn-trigger-ai');
-      const originalText = btn.innerHTML;
-      btn.disabled = true;
-      btn.innerHTML = `<span class="loader"></span> Executando IA...`;
-
-      try {
-        const res = await authFetch(`${API_BASE}/admin/ai/run-now`, { method: 'POST' });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Falha na execução');
-
-        alert(`Concluído com sucesso! ${data.result.posts_created} novos artigos foram preparados como rascunho.`);
         loadBlogPosts();
-        loadAILogs();
-        switchTab('blog');
-      } catch (e) {
-        alert(`Erro: ${e.message}`);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
+        loadDashboardData();
       }
     }
 
-    async function loadAILogs() {
-      try {
-        const res = await authFetch(`${API_BASE}/admin/ai/logs`);
-        const logs = await res.json();
-        const container = document.getElementById('ai-logs-container');
-        if (!container) return;
+    function mostrarLista() {
+      postAtual = null;
+      document.getElementById('blog-editor').classList.add('hidden');
+      document.getElementById('blog-lista').classList.remove('hidden');
+      renderListaBlog();
+    }
 
-        if (logs.length === 0) {
-          container.innerHTML = '<p class="text-xs text-slate-400 py-4 text-center">Nenhum registro de varredura ainda.</p>';
-          return;
-        }
+    function abrirPost(id) {
+      switchTab('blog');
+      const novo = id === 'novo';
+      const base = novo ? null : blogPosts.find(x => x.id === id);
+      if (!novo && !base) return loadBlogPosts().then(() => blogPosts.find(x => x.id === id) && abrirPost(id));
+      postAtual = novo
+        ? { id: null, title: '', excerpt: '', content: '', cover_image: 'Atendimento.jpeg', category: 'Saúde Mental', tags: [], sources: [], status: 'draft', scheduled_for: null, author_name: 'Instituto Contextualize', seo_title: '', seo_description: '' }
+        : JSON.parse(JSON.stringify(base));
+      if (!Array.isArray(postAtual.sources)) postAtual.sources = [];
+      renderEditor();
+      document.getElementById('blog-lista').classList.add('hidden');
+      document.getElementById('blog-editor').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-        container.innerHTML = logs.map(l => {
-          const date = new Date(l.executed_at).toLocaleString('pt-BR');
-          const isOk = l.status === 'success';
-          return `
-            <div class="p-3.5 rounded-2xl border ${isOk ? 'bg-emerald-50/40 border-emerald-200' : 'bg-red-50/40 border-red-200'} flex items-center justify-between text-xs">
-              <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined ${isOk ? 'text-emerald-600' : 'text-red-500'}">
-                  ${isOk ? 'check_circle' : 'error'}
-                </span>
-                <div>
-                  <p class="font-bold text-slate-800">${isOk ? 'Varredura & Artigos Gerados' : 'Falha na Execução'}</p>
-                  <p class="text-[11px] text-slate-400">${date}</p>
+    const campoCls = 'w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none bg-white';
+    const rotuloCls = 'block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5 font-montserrat';
+
+    function renderEditor() {
+      const p = postAtual;
+      const novo = !p.id;
+      const s = novo ? 'rascunho' : situacao(p);
+      const nota = {
+        revisao: 'Aguardando revisão: leia, confira as fontes e aprove para entrar no ar na data abaixo.',
+        agendado: 'Aprovado e agendado: entra no ar sozinho na data abaixo.',
+        'no-ar': 'Este artigo está no ar.',
+        rascunho: 'Rascunho: não aparece no site. Defina a data e aprove, ou publique agora.',
+        arquivado: 'Arquivado: não aparece no site.'
+      }[s];
+      const autores = ['Instituto Contextualize', ...loadedProfessionalsList.map(x => x.name)];
+      if (p.author_name && !autores.includes(p.author_name)) autores.push(p.author_name);
+      const sugestaoData = p.scheduled_for || (() => { const d = new Date(); d.setDate(d.getDate() + 1); d.setHours(12, 0, 0, 0); return d.toISOString(); })();
+
+      document.getElementById('blog-editor').innerHTML = `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-brand-gold font-montserrat">Blog</span>
+            <h2 class="text-2xl font-bold text-brand-blue font-montserrat">${novo ? 'Novo artigo' : 'Editar artigo'}</h2>
+            ${p.origin === 'ia' ? '<p class="text-xs sm:text-sm text-slate-500 mt-1">Gerado por IA a partir de pesquisa na web. Confira os fatos e as fontes antes de aprovar.</p>' : ''}
+          </div>
+          <button type="button" onclick="mostrarLista()" class="px-4 py-2.5 rounded-xl text-xs font-bold uppercase font-montserrat text-slate-600 bg-slate-100 hover:bg-slate-200 flex items-center gap-1.5 self-start sm:self-auto">
+            <span class="material-symbols-outlined text-sm">arrow_back</span> Voltar ao blog
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
+          <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200 shadow-sm space-y-5">
+            <div>
+              <label class="${rotuloCls}" for="ed-titulo">Título</label>
+              <input id="ed-titulo" class="${campoCls} font-montserrat font-bold text-brand-blue" maxlength="160" value="${escHtml(p.title)}" />
+            </div>
+            <div>
+              <label class="${rotuloCls}" for="ed-resumo">Resumo</label>
+              <textarea id="ed-resumo" rows="2" maxlength="320" class="${campoCls}">${escHtml(p.excerpt)}</textarea>
+              <p class="text-[11px] text-slate-400 mt-1">Aparece na listagem e no Google (até 160 caracteres é o ideal).</p>
+            </div>
+            <div>
+              <div class="flex items-center justify-between gap-3 mb-1.5">
+                <span class="${rotuloCls} mb-0">Texto do artigo</span>
+                <div class="inline-flex p-1 rounded-xl bg-slate-100 text-xs font-bold font-montserrat" role="tablist">
+                  <button type="button" id="ed-aba-previa" role="tab" onclick="abaEditor('previa')" class="px-3 py-1.5 rounded-lg">Leitura</button>
+                  <button type="button" id="ed-aba-texto" role="tab" onclick="abaEditor('texto')" class="px-3 py-1.5 rounded-lg">Editar texto</button>
                 </div>
               </div>
-              <div class="text-right">
-                <span class="font-bold text-brand-blue">${l.news_scanned_count || 0} notícias avaliadas</span>
-                <p class="text-[11px] text-slate-500">${l.selected_count || 0} artigos criados</p>
-              </div>
+              <textarea id="ed-corpo" rows="22" class="${campoCls} font-mono text-[13px] leading-relaxed hidden">${escHtml(p.content)}</textarea>
+              <div id="ed-previa" class="previa-artigo rounded-2xl border border-slate-100 bg-slate-50/50 p-5 sm:p-7 max-h-[70vh] overflow-y-auto"></div>
+              <p class="text-[11px] text-slate-400 mt-1.5">Use ## para subtítulos, **negrito**, *itálico*, listas com - e links [texto](https://…).</p>
             </div>
-          `;
-        }).join('');
-      } catch (e) {
-        console.error('Erro ao carregar logs:', e);
+          </div>
+
+          <aside class="space-y-5 xl:sticky xl:top-6">
+            <section class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="font-bold text-brand-blue font-montserrat">Publicação</h3>
+                <span class="px-2 py-0.5 rounded-full border text-[10px] font-bold font-montserrat ${COR_SITUACAO[s]}">${ROTULO_SITUACAO[s]}</span>
+              </div>
+              <p class="text-xs text-slate-500 leading-relaxed">${nota}</p>
+              <div>
+                <label class="${rotuloCls}" for="ed-data">Data e hora</label>
+                <input id="ed-data" type="datetime-local" class="${campoCls}" value="${isoParaLocal(sugestaoData)}" />
+              </div>
+              <div class="grid grid-cols-1 gap-2">
+                <button type="button" onclick="acaoEditor(this, 'agendar')" class="btn-gold w-full py-3 rounded-xl text-xs font-bold uppercase tracking-wider font-montserrat">${s === 'agendado' ? 'Salvar agendamento' : s === 'no-ar' ? 'Salvar alterações' : 'Aprovar e agendar'}</button>
+                ${s !== 'no-ar' ? `<button type="button" onclick="acaoEditor(this, 'publicar')" class="btn-blue w-full py-3 rounded-xl text-xs font-bold uppercase tracking-wider font-montserrat">Publicar agora</button>` : ''}
+                ${s !== 'no-ar' ? `<button type="button" onclick="acaoEditor(this, 'salvar')" class="w-full py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider font-montserrat bg-slate-100 text-slate-700 hover:bg-slate-200">Salvar sem aprovar</button>` : ''}
+              </div>
+              ${!novo ? `
+              <div class="flex flex-wrap gap-x-4 gap-y-2 pt-3 border-t border-slate-100 text-xs font-bold font-montserrat">
+                ${s === 'no-ar' ? `<a href="/blog/${encodeURIComponent(p.slug)}" target="_blank" rel="noopener" class="text-brand-blue hover:text-brand-gold">Ver no site ↗</a>` : ''}
+                ${s === 'agendado' || s === 'no-ar' ? `<button type="button" onclick="acaoEditor(this, 'rascunho')" class="text-slate-600 hover:text-brand-blue">${s === 'no-ar' ? 'Despublicar' : 'Cancelar agendamento'}</button>` : ''}
+                ${s !== 'arquivado' ? `<button type="button" onclick="acaoEditor(this, 'arquivar')" class="text-slate-600 hover:text-brand-blue">Arquivar</button>` : ''}
+                <button type="button" onclick="excluirPostAtual()" class="text-red-600 hover:text-red-700">Excluir</button>
+              </div>` : ''}
+            </section>
+
+            <section class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+              <h3 class="font-bold text-brand-blue font-montserrat">Capa</h3>
+              <img id="ed-capa-previa" src="${escHtml(imgSrc(p.cover_image))}" alt="" class="w-full aspect-[16/10] object-cover rounded-2xl bg-slate-100" onerror="this.src='/Atendimento.jpeg'" />
+              <div class="grid grid-cols-4 gap-2">
+                ${CAPAS_PRONTAS.map(c => `<button type="button" onclick="escolherCapa('${escHtml(c)}')" class="rounded-xl overflow-hidden border-2 ${c === p.cover_image ? 'border-brand-gold' : 'border-transparent'} hover:border-brand-gold/60"><img src="${escHtml(imgSrc(c))}" alt="" class="w-full aspect-square object-cover" /></button>`).join('')}
+              </div>
+              <div class="flex items-center gap-2">
+                <input id="ed-capa" class="${campoCls} text-xs" value="${escHtml(p.cover_image)}" placeholder="Arquivo ou URL da imagem" oninput="document.getElementById('ed-capa-previa').src = imgSrc(this.value)" />
+                <label class="btn-blue px-3 py-2.5 rounded-xl text-xs cursor-pointer flex items-center" title="Enviar imagem">
+                  <span class="material-symbols-outlined text-sm">upload</span>
+                  <input type="file" id="ed-capa-arquivo" accept="image/*" class="hidden" onchange="uploadImage(this, 'ed-capa').then(() => escolherCapa(document.getElementById('ed-capa').value))" />
+                </label>
+              </div>
+            </section>
+
+            <section class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4">
+              <h3 class="font-bold text-brand-blue font-montserrat">Detalhes</h3>
+              <div>
+                <label class="${rotuloCls}" for="ed-autor">Autor</label>
+                <select id="ed-autor" class="${campoCls}">${autores.map(a => `<option ${a === p.author_name ? 'selected' : ''}>${escHtml(a)}</option>`).join('')}</select>
+              </div>
+              <div>
+                <label class="${rotuloCls}" for="ed-categoria">Categoria</label>
+                <input id="ed-categoria" class="${campoCls}" list="ed-categorias" value="${escHtml(p.category)}" />
+                <datalist id="ed-categorias">${['Saúde Mental', 'Psicologia', 'Bem-estar', 'Qualidade de Vida', 'Relacionamentos', 'Infância e Família', 'Saúde Mental no Trabalho', 'Neurociência'].map(c => `<option value="${c}"></option>`).join('')}</datalist>
+              </div>
+              <div>
+                <label class="${rotuloCls}" for="ed-tags">Tags</label>
+                <input id="ed-tags" class="${campoCls}" value="${escHtml((p.tags || []).join(', '))}" placeholder="Separadas por vírgula" />
+              </div>
+              <div>
+                <label class="${rotuloCls}" for="ed-seo-titulo">Título para o Google</label>
+                <input id="ed-seo-titulo" class="${campoCls}" maxlength="70" value="${escHtml(p.seo_title)}" placeholder="Até 60 caracteres" />
+              </div>
+              <div>
+                <label class="${rotuloCls}" for="ed-seo-desc">Descrição para o Google</label>
+                <textarea id="ed-seo-desc" rows="3" maxlength="170" class="${campoCls}" placeholder="140 a 160 caracteres">${escHtml(p.seo_description)}</textarea>
+              </div>
+            </section>
+
+            <section class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+              <h3 class="font-bold text-brand-blue font-montserrat">Fontes consultadas</h3>
+              <p class="text-[11px] text-slate-400">Aparecem no fim do artigo, no site.</p>
+              <div id="ed-fontes" class="space-y-3"></div>
+              <button type="button" onclick="postAtual.sources.push({ titulo: '', url: '' }); renderFontes();" class="px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider font-montserrat bg-slate-100 text-slate-700 hover:bg-slate-200">+ Fonte</button>
+            </section>
+          </aside>
+        </div>`;
+      renderFontes();
+      abaEditor(novo ? 'texto' : 'previa');
+    }
+
+    function renderFontes() {
+      const alvo = document.getElementById('ed-fontes');
+      alvo.innerHTML = postAtual.sources.map((f, i) => `
+        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+          <div class="flex items-center gap-2">
+            <input class="${campoCls} text-xs" placeholder="Título" value="${escHtml(f.titulo)}" oninput="postAtual.sources[${i}].titulo = this.value" />
+            <button type="button" onclick="postAtual.sources.splice(${i}, 1); renderFontes();" class="p-2 rounded-xl text-red-500 hover:bg-red-50" aria-label="Remover fonte"><span class="material-symbols-outlined text-sm">close</span></button>
+          </div>
+          <input class="${campoCls} text-xs" placeholder="https://…" value="${escHtml(f.url)}" oninput="postAtual.sources[${i}].url = this.value" />
+          ${/^https?:\/\//.test(f.url || '') ? `<a href="${escHtml(f.url)}" target="_blank" rel="noopener nofollow" class="text-[11px] text-brand-blue underline">Abrir fonte ↗</a>` : ''}
+        </div>`).join('') || '<p class="text-xs text-slate-400">Nenhuma fonte.</p>';
+    }
+
+    function abaEditor(aba) {
+      const corpo = document.getElementById('ed-corpo');
+      const previa = document.getElementById('ed-previa');
+      const ativa = 'bg-white text-brand-blue shadow-sm';
+      const inativa = 'text-slate-500';
+      document.getElementById('ed-aba-previa').className = `px-3 py-1.5 rounded-lg ${aba === 'previa' ? ativa : inativa}`;
+      document.getElementById('ed-aba-texto').className = `px-3 py-1.5 rounded-lg ${aba === 'texto' ? ativa : inativa}`;
+      if (aba === 'previa') {
+        previa.innerHTML = markdownParaHtml(corpo.value) || '<p class="text-slate-400">Sem texto ainda.</p>';
+        corpo.classList.add('hidden');
+        previa.classList.remove('hidden');
+      } else {
+        corpo.classList.remove('hidden');
+        previa.classList.add('hidden');
       }
+    }
+
+    function escolherCapa(c) {
+      document.getElementById('ed-capa').value = c;
+      document.getElementById('ed-capa-previa').src = imgSrc(c);
+      postAtual.cover_image = c;
+    }
+
+    function dadosDoEditor() {
+      const v = id => document.getElementById(id).value;
+      return {
+        title: v('ed-titulo').trim(),
+        excerpt: v('ed-resumo').trim(),
+        content: v('ed-corpo'),
+        cover_image: v('ed-capa').trim() || 'Atendimento.jpeg',
+        author_name: v('ed-autor'),
+        category: v('ed-categoria').trim(),
+        tags: v('ed-tags').split(',').map(t => t.trim()).filter(Boolean),
+        seo_title: v('ed-seo-titulo').trim(),
+        seo_description: v('ed-seo-desc').trim(),
+        sources: postAtual.sources.map(f => ({ titulo: (f.titulo || '').trim(), url: (f.url || '').trim() })).filter(f => /^https?:\/\//.test(f.url))
+      };
+    }
+
+    async function acaoEditor(botao, acao) {
+      const dados = dadosDoEditor();
+      if (!dados.title || !dados.content.trim()) return alert('O artigo precisa de título e texto.');
+      const data = localParaIso(document.getElementById('ed-data').value);
+      const s = postAtual.id ? situacao(postAtual) : 'rascunho';
+      if (acao === 'agendar') {
+        if (!data) return alert('Escolha a data e a hora de publicação.');
+        if (s !== 'no-ar' && new Date(data) <= new Date() && !confirm('Essa data já passou, então o artigo entra no ar agora. Continuar?')) return;
+        Object.assign(dados, s === 'no-ar' ? { scheduled_for: data } : { status: 'scheduled', scheduled_for: data });
+      } else if (acao === 'publicar') {
+        if (!confirm('Publicar este artigo agora?')) return;
+        Object.assign(dados, { status: 'published', scheduled_for: new Date().toISOString() });
+      } else if (acao === 'salvar') {
+        Object.assign(dados, { scheduled_for: data || undefined });
+        if (!postAtual.id) dados.status = 'draft';
+      } else if (acao === 'rascunho') {
+        Object.assign(dados, { status: 'draft', scheduled_for: data || undefined });
+      } else if (acao === 'arquivar') {
+        if (!confirm('Arquivar este artigo? Ele sai do site, mas fica guardado aqui.')) return;
+        dados.status = 'archived';
+      }
+      const msg = {
+        agendar: s === 'no-ar' ? 'Alterações salvas.' : `Aprovado. Entra no ar em ${dataHoraBR(data)}.`,
+        publicar: 'Publicado. Aparece no site em até 2 minutos.',
+        salvar: 'Alterações salvas.',
+        rascunho: 'Voltou para rascunho e saiu do site.',
+        arquivar: 'Arquivado.'
+      }[acao];
+      try {
+        const salvo = await ocupado(botao, () => postAtual.id
+          ? salvarPost({ id: postAtual.id, ...dados })
+          : apiJson(`${API_BASE}/admin/blog`, { method: 'POST', body: dados }));
+        await loadBlogPosts();
+        loadDashboardData();
+        alert(msg);
+        if (acao === 'agendar' || acao === 'publicar' || acao === 'arquivar') mostrarLista();
+        else abrirPost(salvo.id);
+      } catch (e) { alert(e.message); }
+    }
+
+    async function excluirPostAtual() {
+      if (!confirm('Excluir este artigo de vez? Não dá para desfazer.')) return;
+      try {
+        await apiJson(`${API_BASE}/admin/blog/${postAtual.id}`, { method: 'DELETE' });
+        await loadBlogPosts();
+        loadDashboardData();
+        mostrarLista();
+      } catch (e) { alert(e.message); }
     }
 
     // ==========================================
