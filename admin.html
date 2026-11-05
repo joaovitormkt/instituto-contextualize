@@ -566,7 +566,7 @@
               </span>
               <h2 class="text-2xl sm:text-3xl font-extrabold font-montserrat mb-2">Gerador de Conteúdo Científico</h2>
               <p class="text-sm text-slate-300 leading-relaxed font-manrope">
-                A IA pesquisa notícias sobre psicologia no Brasil e no mundo, avalia o rigor e a relevância de 0 a 10 e apresenta <strong>20 pautas</strong> para você. Escolha e troque as pautas livremente antes de gerar os <strong>artigos extensos e completos</strong> para a semana.
+                A IA pesquisa na web o que está acontecendo em <strong>saúde mental, psicologia, bem-estar e qualidade de vida</strong>, traz <strong>10 pautas com fatos e fontes reais</strong> e dá uma nota de 0 a 10 para cada uma. Escolha as pautas e gere os artigos: eles entram como rascunho, de segunda a sexta às 12h, e só vão ao ar depois de aprovados. Toda segunda às 9h isso acontece sozinho com as 5 melhores.
               </p>
             </div>
 
@@ -574,7 +574,7 @@
               <button onclick="scanNewsForSelection()" id="btn-scan-news"
                 class="btn-gold px-6 py-4 rounded-2xl font-montserrat font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-brand-gold/30">
                 <span class="material-symbols-outlined text-lg">travel_explore</span>
-                <span>Pesquisar 20 Notícias</span>
+                <span>Pesquisar Pautas</span>
               </button>
 
               <button onclick="triggerAIManualRun()" id="btn-trigger-ai"
@@ -591,7 +591,7 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
             <div>
               <span class="text-xs font-bold uppercase tracking-wider text-brand-gold font-montserrat">Pautas Identificadas</span>
-              <h3 class="text-xl font-bold text-brand-blue font-montserrat">Notícias Encontradas para Decisão de Pauta</h3>
+              <h3 class="text-xl font-bold text-brand-blue font-montserrat">Pautas pesquisadas na web</h3>
               <p class="text-xs text-slate-500 mt-0.5">Selecione ou troque as pautas que deseja transformar em artigos densos (recomendado: 5 pautas).</p>
             </div>
 
@@ -611,7 +611,7 @@
           <div id="news-list-container" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div class="col-span-full text-center py-12 text-slate-400">
               <span class="material-symbols-outlined text-4xl mb-2 text-slate-300">manage_search</span>
-              <p class="text-sm">Clique em <strong>"Pesquisar 20 Notícias"</strong> para varrer a internet e avaliar as pautas mais recentes.</p>
+              <p class="text-sm">Clique em <strong>"Pesquisar Pautas"</strong> para a IA pesquisar a web e sugerir as pautas da semana (leva de 1 a 3 minutos).</p>
             </div>
           </div>
         </div>
@@ -943,6 +943,12 @@
             <label class="block text-[11px] font-bold text-slate-500 uppercase">Título SEO</label>
             <input type="text" id="blog-seo-title" class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-brand-gold focus:outline-none" placeholder="Título SEO (máx 65 carac.)" />
           </div>
+
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+            <label class="block text-[11px] font-bold text-slate-500 uppercase">Fontes consultadas</label>
+            <textarea id="blog-sources" rows="3" class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-2 focus:ring-brand-gold focus:outline-none font-mono" placeholder="Uma por linha: Título da fonte | https://endereco.da.fonte"></textarea>
+            <p class="text-[11px] text-slate-400 mt-1">Aparecem no fim do artigo. Nos artigos da IA, confira os fatos e as fontes antes de aprovar.</p>
+          </div>
         </div>
 
         <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
@@ -1081,7 +1087,11 @@
           content: document.getElementById('blog-content').value,
           cover_image: document.getElementById('blog-cover').value,
           tags: tags,
-          seo_title: document.getElementById('blog-seo-title').value
+          seo_title: document.getElementById('blog-seo-title').value,
+          sources: document.getElementById('blog-sources').value.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+            const i = l.lastIndexOf('|');
+            return i >= 0 ? { titulo: l.slice(0, i).trim(), url: l.slice(i + 1).trim() } : { titulo: '', url: l };
+          }).filter(f => /^https?:\/\//.test(f.url))
         };
 
         const method = id ? 'PUT' : 'POST';
@@ -1263,7 +1273,7 @@
                   ${idx + 1}º
                 </span>
                 <div class="min-w-0">
-                  <a href="/artigo/${p.slug}" target="_blank" class="font-bold text-brand-blue hover:text-brand-gold text-xs sm:text-sm line-clamp-1 transition font-montserrat" title="${p.title}">
+                  <a href="/blog/${p.slug}" target="_blank" class="font-bold text-brand-blue hover:text-brand-gold text-xs sm:text-sm line-clamp-1 transition font-montserrat" title="${p.title}">
                     ${p.title}
                   </a>
                   <span class="text-[10px] text-slate-400 block mt-0.5">
@@ -1276,7 +1286,7 @@
                   <span class="material-symbols-outlined text-sm text-brand-gold">visibility</span>
                   ${(p.views_count || 0).toLocaleString('pt-BR')} acessos
                 </span>
-                <a href="/artigo/${p.slug}" target="_blank" class="p-1.5 rounded-lg text-slate-400 hover:text-brand-blue hover:bg-slate-100 transition" title="Ver artigo">
+                <a href="/blog/${p.slug}" target="_blank" class="p-1.5 rounded-lg text-slate-400 hover:text-brand-blue hover:bg-slate-100 transition" title="Ver artigo">
                   <span class="material-symbols-outlined text-sm">open_in_new</span>
                 </a>
               </div>
@@ -1718,7 +1728,7 @@
                 <img src="/${p.cover_image || 'Atendimento.jpeg'}" alt="" class="w-12 h-12 rounded-xl object-cover flex-shrink-0" onerror="this.src='/Atendimento.jpeg'" />
                 <div class="max-w-md">
                   <span class="text-[10px] font-bold uppercase tracking-wider text-brand-gold font-montserrat block">${p.category || 'Psicologia'}</span>
-                  <a href="/artigo/${p.slug}" target="_blank" class="font-bold text-brand-blue hover:text-brand-gold transition line-clamp-1">
+                  <a href="/blog/${p.slug}" target="_blank" class="font-bold text-brand-blue hover:text-brand-gold transition line-clamp-1">
                     ${p.title}
                   </a>
                 </div>
@@ -1741,7 +1751,7 @@
             </td>
             <td class="px-6 py-4 text-right whitespace-nowrap">
               <div class="flex items-center justify-end gap-1.5">
-                <a href="/artigo/${p.slug}" target="_blank" class="p-2 rounded-xl text-slate-500 hover:text-brand-blue hover:bg-slate-100 transition" title="Ver post">
+                <a href="/blog/${p.slug}" target="_blank" class="p-2 rounded-xl text-slate-500 hover:text-brand-blue hover:bg-slate-100 transition" title="Ver post">
                   <span class="material-symbols-outlined text-sm">visibility</span>
                 </a>
                 <button onclick="editBlogPost(${JSON.stringify(p).replace(/"/g, '&quot;')})" class="p-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-brand-blue transition" title="Editar">
@@ -1778,7 +1788,9 @@
         document.getElementById('blog-cover').value = post.cover_image || '';
         document.getElementById('blog-tags').value = Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags || '');
         document.getElementById('blog-seo-title').value = post.seo_title || '';
-        
+        document.getElementById('blog-sources').value = (Array.isArray(post.sources) ? post.sources : [])
+          .map(f => f.titulo ? `${f.titulo} | ${f.url}` : f.url).join('\n');
+
         if (post.scheduled_for) {
           const d = new Date(post.scheduled_for);
           const yyyy = d.getFullYear();
@@ -1872,7 +1884,7 @@
       const btn = document.getElementById('btn-scan-news');
       const originalText = btn.innerHTML;
       btn.disabled = true;
-      btn.innerHTML = `<span class="loader"></span> Varrendo 20 Notícias...`;
+      btn.innerHTML = `<span class="loader"></span> Pesquisando na web...`;
 
       try {
         const res = await authFetch(`${API_BASE}/admin/ai/scan`, { method: 'POST' });
@@ -1881,7 +1893,7 @@
 
         currentScannedNews = data.news || [];
         renderNewsSelectionGrid();
-        alert(`Varredura concluída! ${currentScannedNews.length} notícias recentes foram encontradas e ranqueadas.`);
+        alert(`Pesquisa concluída! ${currentScannedNews.length} pautas com fontes foram encontradas e ranqueadas. As 5 melhores já vêm marcadas.`);
       } catch (e) {
         alert(`Erro na varredura: ${e.message}`);
       } finally {
@@ -1890,13 +1902,17 @@
       }
     }
 
+    function escHtml(v) {
+      return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+    }
+
     function renderNewsSelectionGrid() {
       const container = document.getElementById('news-list-container');
       if (!currentScannedNews || currentScannedNews.length === 0) {
         container.innerHTML = `
           <div class="col-span-full text-center py-10 text-slate-400">
             <span class="material-symbols-outlined text-4xl mb-2 text-slate-300">manage_search</span>
-            <p class="text-sm">Nenhuma notícia encontrada ainda. Clique em "Pesquisar 20 Notícias".</p>
+            <p class="text-sm">Nenhuma pauta ainda. Clique em "Pesquisar Pautas".</p>
           </div>
         `;
         updateSelectedCounter();
@@ -1921,16 +1937,17 @@
               </div>
 
               <h4 class="font-bold text-sm text-brand-blue leading-snug mb-1 font-montserrat">
-                ${item.title}
+                ${escHtml(item.title)}
               </h4>
-              <p class="text-xs text-slate-400 mb-2 font-montserrat font-medium">Fonte: ${item.source || 'Portal Científico'}</p>
+              <p class="text-xs text-slate-400 mb-2 font-montserrat font-medium">${escHtml(item.category_suggestion || '')}${item.source ? ` · ${escHtml(item.source)}` : ''}</p>
               <p class="text-xs text-slate-600 leading-relaxed font-manrope mb-3">
-                ${item.summary || ''}
+                ${escHtml(item.summary || '')}
               </p>
+              ${(item.fontes || []).length ? `<details class="text-[11px] text-slate-500 mb-3"><summary class="cursor-pointer font-bold text-brand-blue">${item.fontes.length} fonte(s)</summary><ul class="mt-1 space-y-1 list-disc pl-4">${item.fontes.map(f => `<li><a href="${escHtml(f.url)}" target="_blank" rel="noopener nofollow" class="underline hover:text-brand-gold break-all">${escHtml(f.titulo || f.url)}</a></li>`).join('')}</ul></details>` : ''}
             </div>
 
             <div class="pt-3 border-t border-slate-200/60 text-[11px] text-slate-500 font-manrope italic">
-              <strong>Avaliação IA:</strong> ${item.score_justification || 'Pauta relevante para psicologia baseada em evidências.'}
+              <strong>Avaliação IA:</strong> ${escHtml(item.score_justification || '')}
             </div>
           </div>
         `;
@@ -1987,7 +2004,7 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Falha ao gerar artigos');
 
-        alert(`Sucesso! ${data.result.posts_created} novos artigos densos foram gerados e salvos como Rascunho para sua aprovação.`);
+        alert(`${data.result.message || `${data.result.posts_created} artigos criados.`} Eles estão como Rascunho: revise os fatos e as fontes e aprove.`);
         loadBlogPosts();
         loadAILogs();
         switchTab('blog');
@@ -2000,7 +2017,7 @@
     }
 
     async function triggerAIManualRun() {
-      if (!confirm('Deseja iniciar a varredura completa automática (pesquisa 20 notícias e redige as TOP 5)?')) return;
+      if (!confirm('Pesquisar pautas na web e escrever as 5 melhores agora? Leva de 2 a 5 minutos.')) return;
       const btn = document.getElementById('btn-trigger-ai');
       const originalText = btn.innerHTML;
       btn.disabled = true;

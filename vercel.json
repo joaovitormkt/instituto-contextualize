@@ -2,6 +2,7 @@
   "version": 2,
   "functions": {
     "api/index.js": {
+      "maxDuration": 300,
       "includeFiles": "**/*.{html,webp,jpeg,jpg,png,svg,ico}"
     }
   },
@@ -15,7 +16,23 @@
       "destination": "/api/index.js"
     },
     {
+      "source": "/blog",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/blog/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
       "source": "/artigo/:slug",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/robots.txt",
       "destination": "/api/index.js"
     },
     {

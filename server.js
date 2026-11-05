@@ -11,6 +11,8 @@ const db = require('./db');
 const { authenticateToken, JWT_SECRET } = require('./auth');
 const { initScheduler } = require('./scheduler');
 const { runNewsScanAndGenerate, scanNewsOnly, generatePostsFromSelectedNews } = require('./ai-service');
+const { publicados, porSlug, garantirEsquema } = require('./lib/blog-posts');
+const { paginaLista, paginaPost, sitemap, feed } = require('./lib/blog-html');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -250,6 +252,7 @@ app.delete('/api/admin/professionals/:id', authenticateToken, async (req, res) =
 // ==========================================
 app.get('/api/admin/blog', authenticateToken, async (req, res) => {
   try {
+    await garantirEsquema();
     const result = await db.query('SELECT * FROM blog_posts ORDER BY scheduled_for DESC, id DESC');
     res.json(result.rows);
   } catch (err) {
@@ -259,7 +262,7 @@ app.get('/api/admin/blog', authenticateToken, async (req, res) => {
 
 app.post('/api/admin/blog', authenticateToken, async (req, res) => {
   try {
-    const { title, excerpt, content, cover_image, author_name, category, tags, scheduled_for, status, seo_title, seo_description, seo_keywords } = req.body;
+    const { title, excerpt, content, cover_image, author_name, category, tags, scheduled_for, status, seo_title, seo_description, seo_keywords, sources } = req.body;
     if (!title || !content) {
       return res.status(400).json({ error: 'Título e conteúdo são obrigatórios.' });
     }
@@ -287,8 +290,8 @@ app.post('/api/admin/blog', authenticateToken, async (req, res) => {
 
     const result = await db.query(
       `INSERT INTO blog_posts
-        (title, slug, excerpt, content, cover_image, author_name, category, tags, scheduled_for, status, seo_title, seo_description, seo_keywords)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        (title, slug, excerpt, content, cover_image, author_name, category, tags, scheduled_for, status, seo_title, seo_description, seo_keywords, sources)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, COALESCE($14::jsonb, '[]'::jsonb))
        RETURNING *`,
       [
         title.trim(),
@@ -303,7 +306,8 @@ app.post('/api/admin/blog', authenticateToken, async (req, res) => {
         status || 'draft',
         seo_title || title,
         seo_description || excerpt,
-        seo_keywords || ''
+        seo_keywords || '',
+        limparFontes(sources)
       ]
     );
 
@@ -317,7 +321,7 @@ app.post('/api/admin/blog', authenticateToken, async (req, res) => {
 app.put('/api/admin/blog/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, excerpt, content, cover_image, author_name, category, tags, scheduled_for, status, seo_title, seo_description, seo_keywords } = req.body;
+    const { title, excerpt, content, cover_image, author_name, category, tags, scheduled_for, status, seo_title, seo_description, seo_keywords, sources } = req.body;
 
     let normalizedScheduledFor = scheduled_for;
     if (normalizedScheduledFor && /^\d{4}-\d{2}-\d{2}$/.test(String(normalizedScheduledFor).trim())) {
@@ -338,10 +342,11 @@ app.put('/api/admin/blog/:id', authenticateToken, async (req, res) => {
            seo_title = COALESCE($10, seo_title),
            seo_description = COALESCE($11, seo_description),
            seo_keywords = COALESCE($12, seo_keywords),
+           sources = COALESCE($14::jsonb, sources),
            updated_at = NOW()
        WHERE id = $13
        RETURNING *`,
-      [title, excerpt, content, cover_image, author_name, category, tags, normalizedScheduledFor, status, seo_title, seo_description, seo_keywords, id]
+      [title, excerpt, content, cover_image, author_name, category, tags, normalizedScheduledFor, status, seo_title, seo_description, seo_keywords, id, limparFontes(sources)]
     );
 
     if (result.rows.length === 0) {
@@ -354,6 +359,14 @@ app.put('/api/admin/blog/:id', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Erro ao atualizar artigo.' });
   }
 });
+
+// Fontes vindas do painel: só links http(s), com título curto.
+function limparFontes(v) {
+  if (!Array.isArray(v)) return null;
+  return JSON.stringify(v.slice(0, 12)
+    .map((f) => ({ titulo: String(f?.titulo || '').trim().slice(0, 200), url: String(f?.url || '').trim().slice(0, 500) }))
+    .filter((f) => /^https?:\/\//.test(f.url)));
+}
 
 // Ações em massa no Blog (aprovar para agendamento às 09h00, excluir, rascunho, etc.)
 app.post('/api/admin/blog/bulk-action', authenticateToken, async (req, res) => {
@@ -799,9 +812,86 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// Rota individual de artigo do Blog
+// ==========================================
+// BLOG PÚBLICO (renderizado no servidor): /blog, /blog/:slug, sitemap e feed
+// ==========================================
+const BLOG_CACHE = 'public, max-age=0, s-maxage=120, stale-while-revalidate=86400';
+const siteDe = (req) => `${req.headers['x-forwarded-proto'] || req.protocol}://${req.headers['x-forwarded-host'] || req.get('host')}`;
+
+async function contatoDoSite() {
+  const r = await db.query(
+    "SELECT key, value FROM system_settings WHERE key IN ('contact_whatsapp', 'contact_phone', 'contact_address')"
+  );
+  const s = Object.fromEntries(r.rows.map((l) => [l.key, l.value || '']));
+  return {
+    whatsapp: String(s.contact_whatsapp || '').replace(/\D/g, ''),
+    telefone: s.contact_phone || '',
+    endereco: s.contact_address || ''
+  };
+}
+
+app.get('/blog', async (req, res) => {
+  try {
+    const categoria = String(req.query.tema || '').slice(0, 60);
+    const [todos, contato] = await Promise.all([publicados(200), contatoDoSite()]);
+    const categorias = [...new Set(todos.map((p) => p.category).filter(Boolean))];
+    const posts = categoria ? todos.filter((p) => p.category === categoria) : todos;
+    res.set('Cache-Control', BLOG_CACHE);
+    res.type('html').send(paginaLista({ site: siteDe(req), posts, contato, categoria, categorias }));
+  } catch (err) {
+    console.error('Erro ao montar /blog:', err);
+    res.status(500).type('html').send('<p>Não foi possível carregar o blog agora. Tente de novo em instantes.</p>');
+  }
+});
+
+app.get('/blog/feed.xml', async (req, res) => {
+  try {
+    const posts = await publicados(30);
+    res.set('Cache-Control', BLOG_CACHE);
+    res.type('application/rss+xml; charset=utf-8').send(feed(siteDe(req), posts));
+  } catch (err) {
+    res.status(500).end();
+  }
+});
+
+app.get('/blog/:slug', async (req, res) => {
+  try {
+    const slug = String(req.params.slug).slice(0, 120);
+    const [post, contato] = await Promise.all([porSlug(slug), contatoDoSite()]);
+    const site = siteDe(req);
+    if (!post) {
+      const recentes = await publicados(6);
+      res.set('Cache-Control', 'public, s-maxage=30');
+      return res.status(404).type('html').send(
+        paginaLista({ site, posts: recentes, contato }).replace(/<title>[^<]*<\/title>/, '<title>Artigo não encontrado · Instituto Contextualize</title>')
+      );
+    }
+    const outros = await publicados(3, post.id);
+    res.set('Cache-Control', BLOG_CACHE);
+    res.type('html').send(paginaPost({ site, post, outros, contato }));
+  } catch (err) {
+    console.error('Erro ao montar artigo:', err);
+    res.status(500).type('html').send('<p>Não foi possível carregar o artigo agora. Tente de novo em instantes.</p>');
+  }
+});
+
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const posts = await publicados(1000);
+    res.set('Cache-Control', BLOG_CACHE);
+    res.type('application/xml; charset=utf-8').send(sitemap(siteDe(req), posts));
+  } catch (err) {
+    res.status(500).end();
+  }
+});
+
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain').send(`User-agent: *\nDisallow: /admin\nDisallow: /api/\n\nSitemap: ${siteDe(req)}/sitemap.xml\n`);
+});
+
+// Endereço antigo dos artigos: redireciona para o novo.
 app.get('/artigo/:slug', (req, res) => {
-  res.sendFile(path.join(__dirname, 'article.html'));
+  res.redirect(301, `/blog/${encodeURIComponent(req.params.slug)}`);
 });
 
 // Servir explicitamente assets estáticos da raiz (imagens com espaços, webp, jpeg, png, etc.)
