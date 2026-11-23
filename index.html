@@ -303,7 +303,7 @@
     .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
     /* Footer */
-    .footer { background: var(--navy-deep); color: #fff; padding: 80px 0 48px; }
+    .footer { background: var(--navy-deep); color: #fff; padding: 80px 0 40px; }
     .footer-grid { display: flex; justify-content: space-between; align-items: end; gap: 40px; flex-wrap: wrap; }
     .footer img { height: 44px; width: auto; margin-bottom: 34px; }
     .footer-contacts a, .footer-contacts span { display: block; margin-top: 12px; color: rgba(255,255,255,.82); transition: color .25s; }
@@ -313,21 +313,21 @@
     .socials a { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); transition: background .3s, transform .3s var(--ease), border-color .3s; }
     .socials a:hover { background: var(--gold); border-color: var(--gold); transform: translateY(-3px); }
     .socials svg { width: 18px; height: 18px; }
-    .footer { border-radius: 0 0 var(--radius) var(--radius); position: relative; z-index: 1; }
 
     /* Assinatura com o nome gigante */
-    .signature { background: var(--ice); margin-top: calc(var(--radius) * -1); padding-top: calc(var(--radius) + 44px); overflow: hidden; }
+    .signature { background: var(--navy-deep); color: #fff; overflow: hidden; }
+    .signature .container { padding-top: 32px; border-top: 1px solid rgba(255,255,255,.1); }
     .signature-row, .signature-legal { display: flex; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; }
-    .signature-row { font-size: 15px; color: var(--muted); }
-    .signature-row a { color: var(--navy); transition: color .25s; }
-    .signature-legal { margin-top: 18px; font-size: 13px; color: rgba(6,45,68,.5); }
-    .signature a:hover { color: var(--gold-dark); }
+    .signature-row { font-size: 15px; color: rgba(255,255,255,.75); }
+    .signature-row a { color: #fff; transition: color .25s; }
+    .signature-legal { margin-top: 18px; font-size: 13px; color: rgba(255,255,255,.5); }
+    .signature a:hover { color: var(--gold); }
     .giant { margin-top: 40px; line-height: 0; text-align: center; }
     .giant span {
       display: inline-block; white-space: nowrap;
       font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: -0.035em; line-height: .78;
       font-size: 12vw; /* ajustado pelo script para ocupar a largura toda */
-      background: linear-gradient(180deg, rgba(6,45,68,.2) 0%, rgba(6,45,68,.08) 55%, rgba(6,45,68,0) 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.06) 55%, rgba(255,255,255,0) 100%);
       -webkit-background-clip: text; background-clip: text; color: transparent;
       transform: translateY(18%); opacity: 0; transition: transform 1.4s var(--ease), opacity 1.2s;
     }
@@ -849,9 +849,10 @@
   const giant = document.getElementById('giant-word');
   const fitGiant = () => {
     giant.style.fontSize = '100px';
-    giant.style.fontSize = (100 * document.documentElement.clientWidth * 0.985 / giant.scrollWidth) + 'px';
+    giant.style.fontSize = (100 * document.documentElement.clientWidth * 0.96 / giant.getBoundingClientRect().width) + 'px';
   };
-  document.fonts.ready.then(fitGiant);
+  document.fonts.load('700 100px Montserrat').then(fitGiant, fitGiant);
+  addEventListener('load', fitGiant);
   addEventListener('resize', fitGiant);
   new IntersectionObserver(([e], obs) => {
     if (e.isIntersecting) { giant.parentElement.classList.add('in'); obs.disconnect(); }
