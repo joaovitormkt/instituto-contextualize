@@ -553,16 +553,16 @@
               </div>
 
               <div class="md:col-span-2">
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 font-montserrat">Chave de API do Pexels (capas do blog)</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 font-montserrat">Chave de API do Pixabay (capas do blog)</label>
                 <div class="relative">
-                  <input type="password" id="input-pexels-key"
+                  <input type="password" id="input-pixabay-key"
                     class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-gold focus:outline-none"
-                    placeholder="Cole aqui a chave gratuita do Pexels" />
-                  <button type="button" onclick="togglePasswordVisibility('input-pexels-key')" class="absolute right-3 top-3 text-slate-400 hover:text-slate-600">
+                    placeholder="Cole aqui a chave gratuita do Pixabay" />
+                  <button type="button" onclick="togglePasswordVisibility('input-pixabay-key')" class="absolute right-3 top-3 text-slate-400 hover:text-slate-600">
                     <span class="material-symbols-outlined text-sm">visibility</span>
                   </button>
                 </div>
-                <p id="pexels-status-text" class="text-xs text-slate-400 mt-1.5">As capas são fotos buscadas na internet. Com a chave do Pexels (gratuita em pexels.com/api) as fotos vêm de um banco profissional; sem ela, do Openverse.</p>
+                <p id="pixabay-status-text" class="text-xs text-slate-400 mt-1.5">As capas são fotos buscadas na internet. Com a chave do Pixabay (gratuita em pixabay.com/api/docs) as fotos vêm de um banco profissional; sem ela, do Openverse.</p>
               </div>
             </div>
           </div>
@@ -859,9 +859,9 @@
         if (key && key.trim() !== '' && !key.includes('...')) {
           payload.openai_api_key = key.trim();
         }
-        const pexelsKey = document.getElementById('input-pexels-key').value;
-        if (pexelsKey && pexelsKey.trim() !== '' && !pexelsKey.includes('...')) {
-          payload.pexels_api_key = pexelsKey.trim();
+        const pixabayKey = document.getElementById('input-pixabay-key').value;
+        if (pixabayKey && pixabayKey.trim() !== '' && !pixabayKey.includes('...')) {
+          payload.pixabay_api_key = pixabayKey.trim();
         }
 
         try {
@@ -1824,12 +1824,12 @@
           statusText.innerHTML = `<span class="text-amber-600 font-bold">⚠ Nenhuma chave configurada</span>`;
         }
 
-        const pexelsText = document.getElementById('pexels-status-text');
-        if (s.pexels_api_key_configured) {
-          pexelsText.innerHTML = `<span class="text-emerald-600 font-bold">✓ Chave do Pexels configurada</span> (${s.pexels_api_key}). As capas vêm do Pexels.`;
-          document.getElementById('input-pexels-key').placeholder = s.pexels_api_key;
+        const pixabayText = document.getElementById('pixabay-status-text');
+        if (s.pixabay_api_key_configured) {
+          pixabayText.innerHTML = `<span class="text-emerald-600 font-bold">✓ Chave do Pixabay configurada</span> (${s.pixabay_api_key}). As capas vêm do Pixabay.`;
+          document.getElementById('input-pixabay-key').placeholder = s.pixabay_api_key;
         } else {
-          pexelsText.innerHTML = `<span class="text-amber-600 font-bold">⚠ Sem chave do Pexels</span>: as capas vêm do Openverse. Crie a chave gratuita em pexels.com/api.`;
+          pixabayText.innerHTML = `<span class="text-amber-600 font-bold">⚠ Sem chave do Pixabay</span>: as capas vêm do Openverse. Crie a chave gratuita em pixabay.com/api/docs.`;
         }
 
         // Contatos

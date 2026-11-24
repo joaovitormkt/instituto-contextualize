@@ -613,9 +613,9 @@ app.get('/api/admin/settings', authenticateToken, async (req, res) => {
     const rows = await db.query('SELECT key, value, description, updated_at FROM system_settings');
     const settings = {};
     rows.rows.forEach(r => {
-      if (r.key === 'pexels_api_key') {
+      if (r.key === 'pixabay_api_key') {
         settings[r.key] = r.value && r.value.length > 8 ? `${r.value.slice(0, 4)}...${r.value.slice(-4)}` : '';
-        settings.pexels_api_key_configured = Boolean(r.value && r.value.trim());
+        settings.pixabay_api_key_configured = Boolean(r.value && r.value.trim());
       } else if (r.key === 'openai_api_key') {
         // Mascara a chave para segurança
         settings[r.key] = r.value && r.value.length > 8
@@ -641,7 +641,7 @@ app.get('/api/admin/settings', authenticateToken, async (req, res) => {
 app.post('/api/admin/settings', authenticateToken, async (req, res) => {
   try {
     const allowedKeys = [
-      'openai_api_key', 'openai_model', 'cron_enabled', 'pexels_api_key',
+      'openai_api_key', 'openai_model', 'cron_enabled', 'pixabay_api_key',
       'contact_whatsapp', 'contact_phone', 'contact_email', 'contact_address', 'contact_hours',
       'social_instagram', 'social_linkedin', 'social_facebook', 'social_youtube'
     ];
@@ -651,7 +651,7 @@ app.post('/api/admin/settings', authenticateToken, async (req, res) => {
         let val = req.body[key];
         if (typeof val === 'string') val = val.trim();
         // Não sobrescrever a chave da OpenAI se vier mascarada ou vazia
-        if ((key === 'openai_api_key' || key === 'pexels_api_key') && (!val || val.includes('...'))) {
+        if ((key === 'openai_api_key' || key === 'pixabay_api_key') && (!val || val.includes('...'))) {
           continue;
         }
 
