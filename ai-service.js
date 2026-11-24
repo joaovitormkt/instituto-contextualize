@@ -160,7 +160,7 @@ Dê uma nota de 0 a 10 (relevance_score) considerando atualidade, solidez das fo
 
 Evite repetir estes temas já publicados: ${recentes.length ? recentes.map((t) => `"${t}"`).join('; ') : 'nenhum'}.
 
-Escreva em português do Brasil. summary: 2 a 3 frases. Tags: 2 a 4 palavras curtas. busca_imagem_en: 2 a 4 palavras em inglês para buscar uma foto acolhedora que represente o tema (ex.: "calm woman reading", "family walking park").`,
+Escreva em português do Brasil. summary: 2 a 3 frases. Tags: 2 a 4 palavras curtas. busca_imagem_en: 2 a 4 palavras em inglês para buscar num banco de fotos uma foto real e concreta do assunto do artigo, descrevendo pessoas, objetos ou lugares que aparecem na cena (ex.: "teenager using smartphone", "nurse talking patient clinic", "elderly man alone window"). Evite palavras abstratas como "mental health" ou "wellbeing".`,
       },
     ],
   });
